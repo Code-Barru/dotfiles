@@ -1,0 +1,83 @@
+@import "themes/mocha.css";
+
+* {
+  font-family: JetBrainsMono Nerd Font;
+  font-size: 17px;
+  min-height: 0;
+}
+
+#waybar {
+  background: transparent;
+  color: @text;
+  margin: 5px 5px;
+}
+
+#workspaces {
+  border-radius: 1rem;
+  margin: 5px 5px;
+}
+
+#workspaces button {
+  color: @blue;
+  border-radius: 1rem;
+  padding: 0.4rem;
+  font-weight: bold;
+}
+
+#workspaces button:last-child {
+  padding-left: 4px;
+  margin-right: 7px;
+  padding-right: 5px;
+}
+
+#workspaces button.active {
+  color: @red;
+  background-color: transparent ;
+}
+
+#workspaces button:hover {
+  color: @blue;
+}
+
+#clock,
+#battery,
+#network,
+#cpu,
+#memory,
+#disk,
+#tooltip,
+#wireplumber,
+
+#cpu {
+  color: @blue;
+  margin-left: 1rem;
+}
+
+#clock {
+  color: @blue;
+  margin-right: 1rem;
+}
+
+#battery {
+  color: @blue;
+}
+
+#battery.charging {
+  color: @green;
+}
+
+#battery.warning:not(.charging) {
+  color: @peach;
+}
+
+#battery.critical:not(.charging) {
+  color: @red;
+}
+
+#network.disconnected {
+  color: @red;
+}
+
+#wireplumber.muted {
+  color: @red
+}

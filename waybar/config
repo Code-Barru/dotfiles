@@ -1,0 +1,67 @@
+{
+    "layer": "top", // Waybar at top layer
+    "position": "top", // Waybar position (top|bottom|left|right)
+    "modules-left": ["cpu", "memory", "disk"],
+    "modules-center": ["hyprland/workspaces"],
+    "modules-right": ["network", "wireplumber","battery", "clock"],
+    "hyprland/workspaces": {
+    "active-only": false,
+    "persistent-workspaces": {
+	      "*": [1,2,3,4]
+      },
+      "ignore-workspaces": ["10"],
+      "format": "{icon}",
+      "on-click": "activate",
+      "format-icons": {
+        "1": "",
+        "2": "<span font='14'></span>",
+        "3": "<span font='18'></span>",
+        "4": "<span font='16'>󰭻</span>",
+      },
+      "sort-by-number": true
+    },
+    "wireplumber": {
+        "format": "{icon} {volume} %",
+        "format-muted": "  {volume} %",
+        "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+        "format-icons": ["", "", " "]
+    },
+    "clock": {
+        "timezone": "Europe/Paris",
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+        "format-alt": "󰃭 {:%d/%m/%Y}",
+        "format": "󰥔 {:%H:%M}"
+    },
+    "cpu": {
+	    "format": "  {usage} % /",
+      "interval": 2,
+      "on-click": "alacritty --command btop"
+    },
+    "memory": {
+	    "interval": 2,
+      "format": "  {percentage} % /",
+	    "tooltip-format": "{used}GiB / {total}GiB",
+      "on-click": "alacritty --command btop"
+    },
+    "disk": {
+	"format": "󰋊 {percentage_used} %"
+    },
+    "battery": {
+        "states": {
+            "warning": 30,
+            "critical": 10
+        },
+	"interval": 10,
+        "format": "{icon} {capacity} %",
+        "format-charging": "󰂄 {capacity} %",
+        "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
+    },
+    "network": {
+        "interface": "wlp194s0",
+        "format": "{ifname}",
+        "format-wifi": "  {essid}",
+        "format-disconnected": "󰖪 Disconnected", //An empty format will hide the module.
+        "max-length": 50,
+    },
+}
+
