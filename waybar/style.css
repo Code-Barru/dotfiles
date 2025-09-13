@@ -1,83 +1,306 @@
 @import "themes/mocha.css";
 
+/*================================================================
+=> General
+================================================================*/
 * {
-  font-family: JetBrainsMono Nerd Font;
-  font-size: 17px;
-  min-height: 0;
-}
-
-#waybar {
-  background: transparent;
-  color: @text;
-  margin: 5px 5px;
-}
-
-#workspaces {
-  border-radius: 1rem;
-  margin: 5px 5px;
-}
-
-#workspaces button {
-  color: @blue;
-  border-radius: 1rem;
-  padding: 0.4rem;
+  margin: 0;
+  padding: 0px;
+  font-family: "JetBrainsMono Nerd Font", "JetBrainsMono";
   font-weight: bold;
+  font-size: 17px;
+  min-height: 15px;
+  background: transparent;
 }
 
-#workspaces button:last-child {
-  padding-left: 4px;
-  margin-right: 7px;
-  padding-right: 5px;
+/*================================================================
+=> Tooltip
+================================================================*/
+tooltip {
+  border: 1px @blue;
+  background-color: @base;
 }
-
-#workspaces button.active {
-  color: @red;
-  background-color: transparent ;
-}
-
-#workspaces button:hover {
+tooltip label {
   color: @blue;
 }
 
-#clock,
-#battery,
-#network,
-#cpu,
-#memory,
-#disk,
-#tooltip,
-#wireplumber,
-
+/*================================================================
+=> Tools menu
+================================================================*/
 #cpu {
-  color: @blue;
-  margin-left: 1rem;
+  margin: 2px 0px 2px 10px;
+  border: 1px solid alpha(@sky, 0.33);
+  border-right: none;
+  border-radius: 6px 0px 0px 6px;
+  padding: 0px 8px 0px 8px;
+  font-weight: bold;
+  background: @base;
+  color: @sky;
 }
 
+#memory {
+  margin: 2px 0px;
+  border: 1px solid alpha(@sky, 0.33);
+  border-right: none;
+  border-left: none;
+  padding: 0px 8px 0px 8px;
+  font-weight: bold;
+  background: @base;
+  color: @sky;
+}
+
+#temperature {
+  margin: 2px 0px;
+  border: 1px solid alpha(@sky, 0.33);
+  border-left: 0px;
+  border-radius: 0px 6px 6px 0px;
+  padding: 0px 8px 0px 8px;
+  font-weight: bold;
+  background: @base;
+  color: @sky;
+}
+/*================================================================
+=> Workspaces
+================================================================*/
+#workspaces {
+  margin: 2px 4px;
+  border-radius: 6px;
+  padding: 1px;
+  background: @base;
+  border: 1px solid alpha(@lavender, 0.33);
+}
+#workspaces button {
+  min-width: 20px;
+  box-shadow: none;
+  margin: 2px 3px;
+  padding-right: 3px;
+  text-shadow: none;
+  border: none;
+  border-radius: 3px;
+  background: alpha(@base, 0.1);
+  color: alpha(@lavender, 0.5);
+  transition: all 0.1s linear;
+}
+#workspaces button.active {
+  min-width: 28px;
+  transition: all 0.1s linear;
+  color: @base;
+  background: @lavender;
+}
+#workspaces button:hover {
+  background: alpha(@mauve, 0.2);
+  border: none;
+}
+#workspaces button.urgent {
+  background-color: @maroon;
+}
+
+/*
+  ================================================================
+  => Clock
+  ================================================================
+*/
 #clock {
+  margin: 2px 0px 2px 0px;
+  padding: 0px 8px 0px 8px;
+  border: 1px solid alpha(@blue, 0.33);
+  border-radius: 0px 6px 6px 0px;
+  border-left: none;
   color: @blue;
-  margin-right: 1rem;
+  background: @base;
 }
 
+/*
+  ================================================================
+  => Wireplumber
+  ================================================================
+*/
+#wireplumber {
+  margin: 2px 0px 2px 0px;
+  padding: 0px 10px 0px 10px;
+  border: 1px solid alpha(@blue, 0.33);
+  border-radius: 0px;
+  border-right: none;
+  border-left: none;
+  color: @blue;
+  background: @base;
+}
+#wireplumber:hover {
+  color: shade(@red, 1.25);
+}
+#wireplumber.muted {
+  color: @red;
+}
+
+/*
+  ================================================================
+  => Backlight (brightness)
+  ================================================================
+*/
+#backlight {
+  margin: 2px 0px;
+  border: 1px solid alpha(@blue, 0.33);
+  border-radius: 0px;
+  border-right: none;
+  border-left: none;
+  padding: 0px 12px 0px 8px;
+  color: @blue;
+  background: @base;
+}
+#backlight:hover {
+  color: shade(@hover, 1.25);
+}
+
+/*================================================================
+=> Bluetooth
+================================================================*/
+#bluetooth {
+  margin: 2px 0px;
+  padding: 0px 8px 0px 4px;
+  border: 1px solid alpha(@border, 0.33);
+  border-radius: 0px;
+  border-right: none;
+  border-left: none;
+  color: @text;
+  background: @background;
+}
+#bluetooth:hover {
+  color: shade(@hover, 1.25);
+}
+
+/*
+  ================================================================
+  => Battery
+  ================================================================
+*/
 #battery {
+  margin: 2px 0px;
+  padding: 0px 10px 0px 10px;
+  border: 1px solid alpha(@blue, 0.33);
+  border-radius: 0px;
+  border-right: none;
+  border-left: none;
   color: @blue;
+  background: @base;
 }
-
-#battery.charging {
+#battery:hover {
+  color: shade(@hover, 1.25);
+}
+#battery.charging,
+#battery.plugged {
   color: @green;
 }
-
 #battery.warning:not(.charging) {
   color: @peach;
 }
-
 #battery.critical:not(.charging) {
   color: @red;
 }
-
-#network.disconnected {
-  color: @red;
+/*
+  ================================================================
+  => Network
+  ================================================================
+*/
+#network {
+  margin: 2px 0px 2px 0px;
+  padding: 0px 10px 0px 10px;
+  border: 1px solid alpha(@blue, 0.33);
+  border-radius: 6px 0px 0px 6px;
+  border-right: none;
+  color: @blue;
+  background: @base;
 }
 
-#wireplumber.muted {
-  color: @red
+/*
+  ================================================================
+  => Tray
+  ================================================================
+*/
+#tray {
+  margin: 3px 2px;
+  border-radius: 6px;
+  padding: 0px 4px 0px 4px;
+  background: alpha(@background, 0.5);
+  border: 1px solid alpha(@border, 0.33);
+}
+#tray > .passive {
+  -gtk-icon-effect: dim;
+}
+#tray > .needs-attention {
+  -gtk-icon-effect: highlight;
+}
+#tray menu {
+  border-radius: 8px;
+  color: @text;
+  background-color: @background;
+  padding: 4px;
+}
+
+/*
+  ================================================================
+  => Notifications
+  ================================================================
+*/
+#custom-notifications {
+  font-size: 13px;
+  margin: 2px 4px;
+  margin-right: 0px;
+  border: 1px solid @border;
+  border-radius: 6px 0px 0px 6px;
+  border-right: none;
+  padding: 0px 11px 0px 8px;
+  color: @text;
+  background: @background;
+}
+#custom-notifications:hover {
+  color: @hover;
+}
+
+/*
+  ================================================================
+  => Power menu
+  ================================================================
+*/
+#custom-power {
+  font-size: 13px;
+  margin: 2px 4px;
+  margin-right: 0px;
+  margin-left: 0px;
+  border: 1px solid @border;
+  border-radius: 0px 6px 6px 0px;
+  padding: 0px 12px 0px 8px;
+  color: @text;
+  background: @background;
+}
+#custom-power:hover {
+  color: @hover;
+}
+
+/*
+  ================================================================
+  => Hide empty modules
+  ================================================================
+*/
+window#waybar.empty #window,
+#custom-updates.none,
+#taskbar.empty,
+#tray.empty,
+#custom-mediaplayer.empty {
+  border: 0px;
+  background-color: transparent;
+  padding: 0px;
+  margin: 0px;
+}
+
+#window {
+  margin: 2px 4px;
+  padding: 0px 8px 0px 8px;
+  border: 1px solid alpha(@border, 0.33);
+  border-radius: 6px;
+  border-top: none;
+  /* border-bottom: none; */
+  border-left: none;
+  border-right: none;
+  color: @red;
+  background: @base;
 }
