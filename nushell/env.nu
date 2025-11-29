@@ -20,3 +20,4 @@ $env.config.buffer_editor = 'nvim'
 $env.config.show_banner = false
 $env.PATH = ($env.PATH | split row (char esep) | append "/home/codebarre/.cargo/bin")
 $env.PATH = ($env.PATH | split row (char esep) | append "/home/codebarre/.go/bin")
+$env.PATH = ($env.PATH | split row (char esep) | append "/home/codebarre/.local/bin")

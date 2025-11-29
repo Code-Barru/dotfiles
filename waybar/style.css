@@ -211,6 +211,10 @@ tooltip label {
   background: @base;
 }
 
+#network.disconnected {
+  color: @red;
+}
+
 /*
   ================================================================
   => Tray
