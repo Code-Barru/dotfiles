@@ -14,13 +14,13 @@
     "cpu": {
 	    "format": "  {usage} %",
       "interval": 2,
-      "on-click": "alacritty --command btop"
+      "on-click": "kitty -e btop"
     },
     "memory": {
 	    "interval": 2,
       "format": "  {percentage} %",
 	    "tooltip-format": "{used}GiB / {total}GiB",
-      "on-click": "alacritty --command btop"
+      "on-click": "kitty -e btop"
     },
     "disk": {
 	    "format": "󰋊 {percentage_used} %"

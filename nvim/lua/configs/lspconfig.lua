@@ -1,25 +1,24 @@
 require("nvchad.configs.lspconfig").defaults()
 
-local lspconfig = require "lspconfig"
-
 -- =============================================================================
 -- SERVEURS LSP SIMPLES
 -- =============================================================================
 
 local simple_servers = {
-  "html",           -- html-lsp
-  "cssls",          -- css-lsp  
+  "html",
+  "cssls",
 }
 
 for _, lsp in ipairs(simple_servers) do
-  lspconfig[lsp].setup {}
+  vim.lsp.config[lsp] = {}
+  vim.lsp.enable(lsp)
 end
 
 -- =============================================================================
 -- LUA LANGUAGE SERVER
 -- =============================================================================
 
-lspconfig.lua_ls.setup {
+vim.lsp.config.lua_ls = {
   settings = {
     Lua = {
       diagnostics = {
@@ -40,16 +39,18 @@ lspconfig.lua_ls.setup {
         callSnippet = "Replace",
       },
       format = {
-        enable = false, -- On utilise stylua pour le formatage
+        enable = false,
       },
     },
   },
 }
+vim.lsp.enable('lua_ls')
+
 -- =============================================================================
 -- TYPESCRIPT LANGUAGE SERVER
 -- =============================================================================
 
-lspconfig.ts_ls.setup {
+vim.lsp.config.ts_ls = {
   settings = {
     typescript = {
       inlayHints = {
@@ -75,12 +76,13 @@ lspconfig.ts_ls.setup {
     },
   },
 }
+vim.lsp.enable('ts_ls')
 
 -- =============================================================================
 -- SVELTE LANGUAGE SERVER
 -- =============================================================================
 
-lspconfig.svelte.setup {
+vim.lsp.config.svelte = {
   settings = {
     svelte = {
       plugin = {
@@ -115,12 +117,13 @@ lspconfig.svelte.setup {
     },
   },
 }
+vim.lsp.enable('svelte')
 
 -- =============================================================================
 -- TAILWIND CSS LANGUAGE SERVER
 -- =============================================================================
 
-lspconfig.tailwindcss.setup {
+vim.lsp.config.tailwindcss = {
   filetypes = {
     "html",
     "css",
@@ -134,7 +137,7 @@ lspconfig.tailwindcss.setup {
     "svelte",
     "vue",
     "astro",
-    "rust", -- Pour les macros comme leptos
+    "rust",
   },
   settings = {
     tailwindCSS = {
@@ -143,7 +146,7 @@ lspconfig.tailwindcss.setup {
         "className", 
         "classList", 
         "ngClass",
-        "class:list" -- Pour Astro
+        "class:list"
       },
       lint = {
         cssConflict = "warning",
@@ -157,14 +160,13 @@ lspconfig.tailwindcss.setup {
       validate = true,
       experimental = {
         classRegex = {
-          -- Pour Rust/leptos
           'class=["\'`]([^"\'`]*)["\'`]',
           'className=["\'`]([^"\'`]*)["\'`]',
         },
       },
     },
   },
-  root_dir = lspconfig.util.root_pattern(
+  root_dir = vim.fs.root(0, {
     "tailwind.config.js",
     "tailwind.config.cjs",
     "tailwind.config.mjs",
@@ -176,5 +178,20 @@ lspconfig.tailwindcss.setup {
     "package.json",
     "node_modules",
     ".git"
-  ),
+  }),
 }
+vim.lsp.enable('tailwindcss')
+
+vim.lsp.config.pylsp = {
+  settings = {
+    pylsp = {
+      plugins = {
+        pylint = {
+          enabled = true,
+          args = { '--disable=C' }  -- C0114 = missing-module-docstring
+        },
+      },
+    },
+  },
+}
+vim.lsp.enable('pylsp')
