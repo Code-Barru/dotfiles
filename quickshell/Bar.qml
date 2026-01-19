@@ -7,6 +7,8 @@ import "components"
 PanelWindow {
     id: bar
 
+    property var powerMenu: null
+
     // Catppuccin Mocha
     readonly property color base: "#1e1e2e"
     readonly property color crust: "#11111b"
@@ -40,41 +42,42 @@ PanelWindow {
         // Gauche - Workspaces
         RowLayout {
           Layout.alignment: Qt.AlignRight
-          spacing: 16
+          spacing: 11
 
-          Workspaces {
-              Layout.alignment: Qt.AlignLeft
+          PowerButton {
+              width: 40
+              height: 30
+              powerMenu: bar.powerMenu
           }
           SystemStats {}
+          Battery {}
         }
 
         // Spacer
+        Item { Layout.fillWidth: true }
+        Workspaces {
+            Layout.alignment: Qt.AlignLeft
+        }
         Item { Layout.fillWidth: true }
 
         // Droite - Modules
         RowLayout {
             Layout.alignment: Qt.AlignRight
-            spacing: 16
+            spacing: 12
 
-            Network {}
-            Audio {}
-            Brightness {}
-            Battery {}
-
-            // Horloge
             Text {
-                color: text_
-                font.pixelSize: 16
-                font.family: "JetBrains Mono"
-                text: Qt.formatDateTime(new Date(), "ddd dd MMM  HH:mm")
+            color: text_
+            font.pixelSize: 16
+            font.family: "JetBrains Mono"
+            text: Qt.formatDateTime(new Date(), "ddd dd     HH:mm   ")
 
-                Timer {
-                    interval: 1000
-                    running: true
-                    repeat: true
-                    onTriggered: parent.text = Qt.formatDateTime(new Date(), "ddd dd MMM  HH:mm")
-                }
+            Timer {
+                interval: 1000
+                running: true
+                repeat: true
+                onTriggered: parent.text = Qt.formatDateTime(new Date(), "ddd dd     HH:mm   ")
             }
+        }
         }
     }
 }

@@ -11,5 +11,6 @@ orientation=vertical
 content_halign=fill
 insensitive=true
 allow_images=true
-image_size=32
+image_size=48
 gtk_dark=true
+columns=4

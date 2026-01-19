@@ -1,0 +1,7 @@
+singleton Theme 1.0 Theme.qml
+VolumeControl 1.0 VolumeControl.qml
+BrightnessControl 1.0 BrightnessControl.qml
+NetworkControl 1.0 NetworkControl.qml
+NotificationsArea 1.0 NotificationsArea.qml
+Slider 1.0 Slider.qml
+Toggle 1.0 Toggle.qml

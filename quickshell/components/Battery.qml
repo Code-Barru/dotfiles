@@ -42,8 +42,8 @@ RowLayout {
         font.family: "JetBrains Mono"
         color: {
             if (battery.status === "Charging") return bar.green
-            if (battery.percent <= 20) return bar.red
-            if (battery.percent <= 40) return bar.yellow
+            if (battery.percent <= 10) return bar.red
+            if (battery.percent <= 20) return bar.yellow
             return bar.text_
         }
         text: {
@@ -66,8 +66,8 @@ RowLayout {
         font.family: "JetBrains Mono"
         color: {
             if (battery.status === "Charging") return bar.green
-            if (battery.percent <= 20) return bar.red
-            if (battery.percent <= 40) return bar.yellow
+            if (battery.percent <= 10) return bar.red
+            if (battery.percent <= 20) return bar.yellow
             return bar.text_
         }
         text: battery.percent + "%"
