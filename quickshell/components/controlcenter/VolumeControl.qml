@@ -6,36 +6,9 @@ ColumnLayout {
     id: volumeControl
     spacing: Theme.spacing
 
+    // État volume/mute (bindé depuis ControlCenter, alimenté par l'OSD)
     property int volume: 50
     property bool muted: false
-
-    Process {
-        id: getVolume
-        command: ["pactl", "get-sink-volume", "@DEFAULT_SINK@"]
-        running: true
-
-        stdout: SplitParser {
-            onRead: data => {
-                const match = data.match(/(\d+)%/)
-                if (match) {
-                    volumeControl.volume = parseInt(match[1])
-                    slider.value = volumeControl.volume
-                }
-            }
-        }
-    }
-
-    Process {
-        id: getMute
-        command: ["pactl", "get-sink-mute", "@DEFAULT_SINK@"]
-        running: true
-
-        stdout: SplitParser {
-            onRead: data => {
-                volumeControl.muted = data.includes("yes") || data.includes("oui")
-            }
-        }
-    }
 
     Process {
         id: setVolume
@@ -45,16 +18,6 @@ ColumnLayout {
     Process {
         id: toggleMute
         command: ["pactl", "set-sink-mute", "@DEFAULT_SINK@", "toggle"]
-    }
-
-    Timer {
-        interval: 300
-        running: true
-        repeat: true
-        onTriggered: {
-            getVolume.running = true
-            getMute.running = true
-        }
     }
 
     // Header avec icône et bouton mute
@@ -123,7 +86,6 @@ ColumnLayout {
         value: volumeControl.volume
 
         onUserChanged: newValue => {
-            volumeControl.volume = newValue
             setVolume.command = ["pactl", "set-sink-volume", "@DEFAULT_SINK@", newValue + "%"]
             setVolume.running = true
         }

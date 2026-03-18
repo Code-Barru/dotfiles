@@ -6,35 +6,12 @@ ColumnLayout {
     id: brightnessControl
     spacing: Theme.spacing
 
+    // État brightness (bindé depuis ControlCenter, alimenté par l'OSD)
     property int percent: 50
-
-    Process {
-        id: getBrightness
-        command: ["brightnessctl", "-m"]
-        running: true
-
-        stdout: SplitParser {
-            splitMarker: ""
-            onRead: data => {
-                const parts = data.trim().split(',')
-                if (parts.length >= 5) {
-                    brightnessControl.percent = parseInt(parts[3].replace('%', ''))
-                    slider.value = brightnessControl.percent
-                }
-            }
-        }
-    }
 
     Process {
         id: setBrightness
         command: ["brightnessctl", "set", "50%"]
-    }
-
-    Timer {
-        interval: 500
-        running: true
-        repeat: true
-        onTriggered: getBrightness.running = true
     }
 
     // Header
@@ -43,7 +20,7 @@ ColumnLayout {
         spacing: 8
 
         Text {
-            text: "  Luminosité"
+            text: "  Luminosité"
             color: Theme.blue
             font.pixelSize: Theme.normalFontSize
             font.family: "JetBrains Mono"
@@ -71,7 +48,6 @@ ColumnLayout {
         value: brightnessControl.percent
 
         onUserChanged: newValue => {
-            brightnessControl.percent = newValue
             setBrightness.command = ["brightnessctl", "set", newValue + "%"]
             setBrightness.running = true
         }

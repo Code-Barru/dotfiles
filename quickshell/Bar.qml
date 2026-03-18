@@ -27,7 +27,7 @@ PanelWindow {
         right: true
     }
 
-    height: 42
+    implicitHeight: 42
     color: crust
 
     WlrLayershell.namespace: "quickshell"
@@ -39,9 +39,9 @@ PanelWindow {
         anchors.rightMargin: 8
         spacing: 0
 
-        // Gauche - Workspaces
+        // Gauche - Modules
         RowLayout {
-          Layout.alignment: Qt.AlignRight
+          Layout.alignment: Qt.AlignLeft
           spacing: 11
 
           PowerButton {
@@ -55,29 +55,33 @@ PanelWindow {
 
         // Spacer
         Item { Layout.fillWidth: true }
-        Workspaces {
-            Layout.alignment: Qt.AlignLeft
-        }
-        Item { Layout.fillWidth: true }
 
         // Droite - Modules
         RowLayout {
             Layout.alignment: Qt.AlignRight
             spacing: 12
 
+            // ClaudeUsage {}
+
             Text {
             color: text_
             font.pixelSize: 16
             font.family: "JetBrains Mono"
-            text: Qt.formatDateTime(new Date(), "ddd dd     HH:mm   ")
+            text: Qt.formatDateTime(new Date(), "ddd dd     HH:mm   ")
 
             Timer {
                 interval: 1000
                 running: true
                 repeat: true
-                onTriggered: parent.text = Qt.formatDateTime(new Date(), "ddd dd     HH:mm   ")
+                onTriggered: parent.text = Qt.formatDateTime(new Date(), "ddd dd     HH:mm   ")
             }
         }
         }
+    }
+
+    // Workspaces - Positionnement absolu au centre
+    Workspaces {
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
     }
 }

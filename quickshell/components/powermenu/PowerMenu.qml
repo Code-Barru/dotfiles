@@ -31,7 +31,7 @@ PanelWindow {
 
     WlrLayershell.namespace: "quickshell-powermenu"
     WlrLayershell.layer: WlrLayer.Overlay
-    WlrLayershell.keyboardFocus: powerMenu.isOpen ? WlrFocus.Exclusive : WlrFocus.None
+    WlrLayershell.keyboardFocus: powerMenu.isOpen ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
 
     GlobalShortcut {
         appid: "quickshell"

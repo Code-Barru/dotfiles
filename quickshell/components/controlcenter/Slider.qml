@@ -9,6 +9,13 @@ Rectangle {
     property color trackColor: Theme.surface0
     property color fillColor: Theme.blue
 
+    // Valeur affichée : pendant le drag on utilise dragValue, sinon value
+    property bool dragging: mouseArea.pressed
+    property real dragValue: value
+
+    // La valeur effective affichée (drag prioritaire sur binding)
+    readonly property real displayValue: dragging ? dragValue : value
+
     signal userChanged(real newValue)  // Signal custom pour changements utilisateur
 
     implicitWidth: 300
@@ -19,7 +26,7 @@ Rectangle {
     // Fill bar
     Rectangle {
         id: fill
-        width: ((slider.value - slider.min) / (slider.max - slider.min)) * parent.width
+        width: ((slider.displayValue - slider.min) / (slider.max - slider.min)) * parent.width
         height: parent.height
         radius: 4
         color: fillColor
@@ -38,6 +45,7 @@ Rectangle {
         y: (parent.height - height) / 2
 
         Behavior on x {
+            enabled: !slider.dragging
             NumberAnimation {
                 duration: Theme.fastDuration
                 easing.type: Easing.OutQuad
@@ -55,13 +63,16 @@ Rectangle {
             const newValue = slider.min + (clampedX / width) * (slider.max - slider.min)
             const roundedValue = Math.round(newValue)
 
-            if (roundedValue !== slider.value) {
-                slider.value = roundedValue
+            if (roundedValue !== slider.dragValue) {
+                slider.dragValue = roundedValue
                 slider.userChanged(roundedValue)
             }
         }
 
-        onPressed: mouse => updateValue(mouse.x)
+        onPressed: mouse => {
+            slider.dragValue = slider.value
+            updateValue(mouse.x)
+        }
         onPositionChanged: mouse => {
             if (pressed) updateValue(mouse.x)
         }

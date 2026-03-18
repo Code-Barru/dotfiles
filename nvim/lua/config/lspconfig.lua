@@ -238,3 +238,29 @@ vim.lsp.config.pylsp = {
   },
 }
 vim.lsp.enable('pylsp')
+
+
+-- =============================================================================
+-- CLANGD (C/C++)
+-- =============================================================================
+
+vim.lsp.config.clangd = {
+  capabilities = capabilities,
+  on_attach = on_attach,
+  cmd = {
+    "clangd",
+    "--background-index",
+    "--clang-tidy",
+    "--completion-style=detailed",
+    "--header-insertion=iwyu",
+  },
+  filetypes = { "c", "cpp", "objc", "objcpp" },
+  root_dir = vim.fs.root(0, {
+    "compile_commands.json",
+    "compile_flags.txt",
+    "CMakeLists.txt",
+    "Makefile",
+    ".git",
+  }),
+}
+vim.lsp.enable('clangd')
