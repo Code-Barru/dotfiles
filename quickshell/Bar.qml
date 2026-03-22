@@ -61,7 +61,7 @@ PanelWindow {
             Layout.alignment: Qt.AlignRight
             spacing: 12
 
-            // ClaudeUsage {}
+            ClaudeUsage {}
 
             Text {
             color: text_
