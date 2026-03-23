@@ -16,6 +16,7 @@ PS1='[\u@\h \W]\$ '
 
 # Created by `pipx` on 2025-09-21 19:44:39
 export PATH="$PATH:/home/codebarre/.local/bin"
+export PATH="$PATH:/home/codebarre/.cargo/bin"
 
 plugins=(
   git

@@ -5,14 +5,17 @@ return {
   config = function()
     require("neorg").setup({
       load = {
+        -- Core modules
         ["core.defaults"] = {},
         ["core.concealer"] = {
           config = {
-            icon_preset = "diamond",
+            icon_preset = "diamond",  -- Icônes jolies
             folds = true,
-            init_open_folds = "always",
+            init_open_folds = "always",  -- Toujours ouvrir les folds au démarrage
             icons = {
-              code_block = { conceal = true },
+              code_block = {
+                conceal = true,  -- Cacher les délimiteurs de code blocks
+              },
             },
           },
         },
@@ -25,6 +28,8 @@ return {
             index = "index.norg",
           },
         },
+
+        -- PARA modules
         ["core.journal"] = {
           config = {
             workspace = "notes",
@@ -32,10 +37,14 @@ return {
             strategy = "flat",
           },
         },
-        ["core.qol.todo_items"] = {},
-        ["core.ui.calendar"] = {},
+        ["core.qol.todo_items"] = {},  -- Gestion des tâches
+        ["core.ui.calendar"] = {},  -- Calendrier
+
+        -- Intégrations
         ["core.completion"] = {
-          config = { engine = "nvim-cmp" },
+          config = {
+            engine = "nvim-cmp",
+          },
         },
         ["core.integrations.nvim-cmp"] = {},
       },

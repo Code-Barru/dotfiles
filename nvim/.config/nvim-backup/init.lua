@@ -1,0 +1,7 @@
+require("config.options")
+require("config.syntax")
+require("config.lazy")
+require("config.diagnostics")
+require("config.lsp_handlers")
+require("config.mappings")
+require("config.autoclose").setup()
