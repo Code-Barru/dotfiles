@@ -30,7 +30,7 @@ RowLayout {
     Process {
         id: tokenLoader
         command: ["sh", "-c",
-            "cat ~/.local/share/opencode/auth.json | jq -r '.anthropic.access // empty'"]
+            "cat ~/.claude/.credentials.json | jq -r '.claudeAiOauth.accessToken // empty'"]
         running: true
         stdout: SplitParser {
             splitMarker: ""

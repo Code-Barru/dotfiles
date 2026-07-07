@@ -1,6 +1,7 @@
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Io
+import Quickshell.Services.UPower
 import QtQuick
 import "components/osd"
 import "components/controlcenter"
@@ -124,7 +125,49 @@ PanelWindow {
             getBrightness.running = true
         }
     }
-    
+
+    // ==================== SURVEILLANCE BATTERIE ====================
+
+    property bool batteryWarned20: false
+    property bool batteryWarned10: false
+
+    function checkBatteryThresholds() {
+        const device = UPower.displayDevice
+        if (!device.isPresent) return
+
+        const pct = device.percentage * 100
+        const discharging = device.state === UPowerDeviceState.Discharging
+
+        if (!discharging || pct > 25) {
+            batteryWarned20 = false
+            batteryWarned10 = false
+            return
+        }
+
+        if (pct <= 10 && !batteryWarned10) {
+            batteryWarned10 = true
+            batteryWarned20 = true
+            showBatteryWarning(Math.round(pct), true)
+        } else if (pct <= 20 && !batteryWarned20) {
+            batteryWarned20 = true
+            showBatteryWarning(Math.round(pct), false)
+        }
+    }
+
+    function showBatteryWarning(pct, critical) {
+        batteryOSD.warningPercent = pct
+        batteryOSD.isCritical = critical
+        batteryOSD.show()
+    }
+
+    Connections {
+        target: UPower.displayDevice
+        function onPercentageChanged() { checkBatteryThresholds() }
+        function onStateChanged() { checkBatteryThresholds() }
+    }
+
+    Component.onCompleted: checkBatteryThresholds()
+
     // ==================== OSD VOLUME ====================
     
     OSDBase {
@@ -168,6 +211,35 @@ PanelWindow {
         
         onHideTriggered: {
             if (activeOSD === "brightness") {
+                activeOSD = ""
+            }
+        }
+    }
+
+    // ==================== OSD BATTERIE ====================
+
+    OSDBase {
+        id: batteryOSD
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        visible: activeOSD === "battery"
+
+        property int warningPercent: 0
+        property bool isCritical: false
+
+        timeout: 3000
+
+        icon: isCritical ? "󰁺" : "󰁼"
+        value: warningPercent
+        iconColor: isCritical ? Theme.red : Theme.yellow
+        barColor: isCritical ? Theme.red : Theme.yellow
+
+        onShowTriggered: {
+            activeOSD = "battery"
+        }
+
+        onHideTriggered: {
+            if (activeOSD === "battery") {
                 activeOSD = ""
             }
         }

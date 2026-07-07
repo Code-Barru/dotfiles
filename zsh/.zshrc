@@ -16,15 +16,17 @@ PS1='[\u@\h \W]\$ '
 
 # Created by `pipx` on 2025-09-21 19:44:39
 export PATH="$PATH:/home/codebarre/.local/bin"
+export PATH="$PATH:/home/codebarre/.platformio/penv/bin"
 export PATH="$PATH:/home/codebarre/.cargo/bin"
 
 plugins=(
   git
   zsh-autosuggestions
-  zsh-syntax-highlighting
+  # zsh-syntax-highlighting
   fast-syntax-highlighting
   docker
   docker-compose
+  gapline
 )
 source $ZSH/oh-my-zsh.sh
 
@@ -33,3 +35,4 @@ eval "$(starship init zsh)"
 alias ff='fastfetch'
 alias vim=nvim
 alias para='cd ~/notes && nvim ~/notes/index.norg'
+alias lg='lazygit'

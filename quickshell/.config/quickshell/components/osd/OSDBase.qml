@@ -10,11 +10,12 @@ Rectangle {
     property int value: 0
     property color iconColor: Theme.blue
     property color barColor: Theme.blue
-    
+    property int timeout: 1500
+
     // Signaux
     signal showTriggered()
     signal hideTriggered()
-    
+
     // État interne
     property bool isVisible: false
     
@@ -34,22 +35,25 @@ Rectangle {
         }
     }
     
-    // Timer d'auto-masquage (1.5 secondes)
+    // Timer d'auto-masquage
     Timer {
         id: hideTimer
-        interval: 1500
+        interval: osdBase.timeout
         repeat: false
-        onTriggered: {
-            osdBase.isVisible = false
-            osdBase.hideTriggered()
-        }
+        onTriggered: osdBase.dismiss()
     }
-    
+
     // Méthode publique pour afficher l'OSD
     function show() {
         isVisible = true
         showTriggered()
         hideTimer.restart()
+    }
+
+    function dismiss() {
+        isVisible = false
+        hideTimer.stop()
+        hideTriggered()
     }
     
     // Layout horizontal compact
