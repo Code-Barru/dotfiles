@@ -9,24 +9,10 @@ return {
   -- LSP
   {
     "neovim/nvim-lspconfig",
+    ft = { "mdx" },
     config = function()
       require "configs.lspconfig"
     end,
-  },
-
-  -- Treesitter (override NvChad defaults to add our parsers)
-  {
-    "nvim-treesitter/nvim-treesitter",
-    opts = {
-      ensure_installed = {
-        "lua", "vim", "vimdoc",
-        "rust", "python",
-        "javascript", "typescript", "svelte",
-        "html", "css",
-        "markdown", "markdown_inline",
-        "norg",
-      },
-    },
   },
 
   -- Rust

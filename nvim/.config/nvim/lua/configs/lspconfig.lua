@@ -11,24 +11,6 @@ if has_cmp then
 end
 
 -- =============================================================================
--- ON_ATTACH (notification when LSP loads)
--- =============================================================================
-
-local on_attach = function(client, bufnr)
-  local filetype = vim.bo[bufnr].filetype
-
-  vim.defer_fn(function()
-    if client and client.server_capabilities then
-      vim.notify(
-        string.format("LSP '%s' loaded for %s", client.name, filetype),
-        vim.log.levels.INFO,
-        { title = "LSP Ready" }
-      )
-    end
-  end, 100)
-end
-
--- =============================================================================
 -- SIMPLE SERVERS
 -- =============================================================================
 
@@ -40,7 +22,6 @@ local simple_servers = {
 for _, lsp in ipairs(simple_servers) do
   vim.lsp.config[lsp] = {
     capabilities = capabilities,
-    on_attach = on_attach,
   }
 end
 
@@ -52,7 +33,6 @@ vim.lsp.enable(simple_servers)
 
 vim.lsp.config.lua_ls = {
   capabilities = capabilities,
-  on_attach = on_attach,
   settings = {
     Lua = {
       diagnostics = {
@@ -86,7 +66,6 @@ vim.lsp.enable("lua_ls")
 
 vim.lsp.config.ts_ls = {
   capabilities = capabilities,
-  on_attach = on_attach,
   settings = {
     typescript = {
       inlayHints = {
@@ -120,7 +99,6 @@ vim.lsp.enable("ts_ls")
 
 vim.lsp.config.svelte = {
   capabilities = capabilities,
-  on_attach = on_attach,
   settings = {
     svelte = {
       plugin = {
@@ -144,7 +122,6 @@ vim.lsp.enable("svelte")
 
 vim.lsp.config.tailwindcss = {
   capabilities = capabilities,
-  on_attach = on_attach,
   filetypes = {
     "html", "css", "scss", "sass", "postcss",
     "javascript", "javascriptreact", "typescript", "typescriptreact",
@@ -185,7 +162,6 @@ vim.lsp.enable("tailwindcss")
 
 vim.lsp.config.pylsp = {
   capabilities = capabilities,
-  on_attach = on_attach,
   settings = {
     pylsp = {
       plugins = {
@@ -205,7 +181,6 @@ vim.lsp.enable("pylsp")
 
 vim.lsp.config.clangd = {
   capabilities = capabilities,
-  on_attach = on_attach,
   cmd = {
     "clangd",
     "--background-index",
@@ -219,3 +194,41 @@ vim.lsp.config.clangd = {
   }),
 }
 vim.lsp.enable("clangd")
+
+-- =============================================================================
+-- JSON LANGUAGE SERVER
+-- =============================================================================
+
+vim.lsp.config.jsonls = {
+  capabilities = capabilities,
+  settings = {
+    json = {
+      validate = { enable = true },
+    },
+  },
+  init_options = { provideFormatter = true },
+}
+vim.lsp.enable("jsonls")
+
+-- =============================================================================
+-- YAML LANGUAGE SERVER
+-- =============================================================================
+
+vim.lsp.config.yamlls = {
+  capabilities = capabilities,
+  settings = {
+    yaml = {
+      validate = true,
+      hover = true,
+      completion = true,
+      schemaStore = {
+        enable = true,
+        url = "https://www.schemastore.org/api/json/catalog.json",
+      },
+      schemas = {},
+    },
+  },
+}
+vim.lsp.enable("yamlls")
+
+-- MDX ANALYZER is started via autocmds.lua (needs early loading before lazy plugins)
