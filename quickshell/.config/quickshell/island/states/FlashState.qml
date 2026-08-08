@@ -3,7 +3,6 @@ import QtQuick.Layouts
 import "../.."
 import "../../services"
 
-// État transitoire : volume, luminosité, batterie faible
 Item {
     id: root
 
@@ -78,7 +77,6 @@ Item {
         }
     }
 
-    // Batterie critique : 3 clignotements puis retour à l'état de base
     SequentialAnimation {
         running: root.isBattery
         loops: 3

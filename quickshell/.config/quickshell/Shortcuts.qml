@@ -80,4 +80,11 @@ Scope {
         description: "Piste précédente"
         onPressed: Media.previous()
     }
+
+    GlobalShortcut {
+        appid: "quickshell"
+        name: "powermenu_toggle"
+        description: "Menu d'alimentation"
+        onPressed: IslandState.requestState("powerMenu")
+    }
 }

@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell.Io
-import ".."
+import "../.."
 
 Rectangle {
     id: root
@@ -12,9 +12,9 @@ Rectangle {
     property string command: ""
     signal triggered()
 
-    width: 160
-    height: 120
-    radius: 12
+    width: Theme.powerActionWidth
+    height: Theme.powerActionHeight
+    radius: 10
     color: mouseArea.containsMouse ? Theme.surface1 : Theme.surface0
 
     Behavior on color {
@@ -34,20 +34,20 @@ Rectangle {
 
     ColumnLayout {
         anchors.centerIn: parent
-        spacing: 12
+        spacing: 6
 
         Text {
             text: root.icon
-            font.pixelSize: 48
-            font.family: "JetBrains Mono"
+            font.pixelSize: 34
+            font.family: Theme.fontFamily
             color: root.actionColor
             Layout.alignment: Qt.AlignHCenter
         }
 
         Text {
             text: root.label
-            font.pixelSize: Theme.normalFontSize
-            font.family: "JetBrains Mono"
+            font.pixelSize: Theme.tinyFontSize
+            font.family: Theme.fontFamily
             color: Theme.text
             Layout.alignment: Qt.AlignHCenter
         }
@@ -62,20 +62,11 @@ Rectangle {
         onClicked: {
             root.triggered()
             executeProcess.running = true
-            closeTimer.start()
         }
     }
 
     Process {
         id: executeProcess
         command: root.command.split(" ")
-    }
-
-    Timer {
-        id: closeTimer
-        interval: 100
-        onTriggered: {
-            // Signal will be caught by PowerMenu to close itself
-        }
     }
 }

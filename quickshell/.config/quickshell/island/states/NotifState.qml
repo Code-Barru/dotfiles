@@ -3,7 +3,6 @@ import "../.."
 import "../../services"
 import "../parts"
 
-// Toast : la notification qui vient d'arriver
 Item {
     id: root
 

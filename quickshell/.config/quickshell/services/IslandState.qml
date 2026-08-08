@@ -73,6 +73,9 @@ Singleton {
     }
 
     function flash(kind, value, critical) {
+        if (overlayState === "powerMenu")
+            return
+
         flashKind = kind
         flashValue = value ?? 0
         flashValueCritical = critical ?? false
@@ -83,7 +86,7 @@ Singleton {
     }
 
     function showNotification(notif) {
-        if (overlayState === "notifCenter")
+        if (overlayState === "notifCenter" || overlayState === "powerMenu")
             return
 
         currentNotif = notif
@@ -113,16 +116,48 @@ Singleton {
             openNotifCenter()
     }
 
-    function pinBase(name) {
-        pinnedBase = name
-        pinTimer.restart()
+    function openPowerMenu() {
+        overlayTimer.stop()
+        currentNotif = null
+        overlayState = "powerMenu"
         wake()
     }
 
-    Timer {
-        id: pinTimer
-        interval: Theme.pinTimeout
-        onTriggered: root.pinnedBase = ""
+    function pinBase(name) {
+        pinnedBase = name
+        wake()
+    }
+
+    function unpinBase() {
+        pinnedBase = ""
+        wake()
+    }
+
+    function resetState() {
+        clearOverlay()
+        unpinBase()
+    }
+
+    // Un raccourci d'état bascule vers cet état en repartant de zéro ; le même
+    // raccourci une seconde fois ramène au défaut
+    function requestState(name) {
+        const wasActive = state === name
+
+        resetState()
+
+        if (wasActive)
+            return
+
+        switch (name) {
+        case "notifCenter":
+            openNotifCenter()
+            break
+        case "powerMenu":
+            openPowerMenu()
+            break
+        default:
+            pinBase(name)
+        }
     }
 
     function cycle() {
@@ -165,21 +200,21 @@ Singleton {
         appid: "quickshell"
         name: "island_hour"
         description: "Island : afficher l'heure"
-        onPressed: root.pinBase("hour")
+        onPressed: root.requestState("hour")
     }
 
     GlobalShortcut {
         appid: "quickshell"
         name: "island_media"
         description: "Island : afficher le média"
-        onPressed: root.pinBase("media")
+        onPressed: root.requestState("media")
     }
 
     GlobalShortcut {
         appid: "quickshell"
         name: "island_notifications"
         description: "Island : centre de notifications"
-        onPressed: root.toggleNotifCenter()
+        onPressed: root.requestState("notifCenter")
     }
 
     GlobalShortcut {
@@ -202,6 +237,11 @@ Singleton {
             if (name === "notifCenter") {
                 root.openNotifCenter()
                 return "overlay -> notifCenter"
+            }
+
+            if (name === "powerMenu") {
+                root.openPowerMenu()
+                return "overlay -> powerMenu"
             }
 
             return `état inconnu: ${name}`

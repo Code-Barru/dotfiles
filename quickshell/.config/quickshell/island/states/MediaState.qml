@@ -27,8 +27,6 @@ Item {
         anchors.margins: Theme.islandPadding
         spacing: Theme.spacing
 
-        // ==================== POCHETTE ====================
-
         ClippingRectangle {
             Layout.preferredWidth: 76
             Layout.preferredHeight: 76
@@ -58,8 +56,6 @@ Item {
                 visible: status === Image.Ready
             }
         }
-
-        // ==================== INFOS ====================
 
         ColumnLayout {
             Layout.fillWidth: true
@@ -115,8 +111,6 @@ Item {
                 }
             }
         }
-
-        // ==================== HEURE + CONTRÔLES ====================
 
         ColumnLayout {
             Layout.alignment: Qt.AlignVCenter

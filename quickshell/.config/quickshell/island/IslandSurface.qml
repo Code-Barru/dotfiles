@@ -65,8 +65,12 @@ Item {
         }
     }
 
+    // Marges négatives : en scale fractionnaire le flanc du corps tombe sur un
+    // demi-pixel physique, et les deux items le couvrent chacun à moitié sans
+    // que leurs alphas se recomposent — d'où une couture d'un pixel. On chevauche.
     InvertedCorner {
         anchors.right: body.left
+        anchors.rightMargin: -1
         anchors.top: body.top
         radius: root.cornerRadius
         fillColor: root.surfaceColor
@@ -74,6 +78,7 @@ Item {
 
     InvertedCorner {
         anchors.left: body.right
+        anchors.leftMargin: -1
         anchors.top: body.top
         radius: root.cornerRadius
         fillColor: root.surfaceColor

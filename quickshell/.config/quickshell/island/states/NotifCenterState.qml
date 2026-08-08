@@ -4,7 +4,6 @@ import "../.."
 import "../../services"
 import "../parts"
 
-// Historique des notifications
 Item {
     id: root
 
@@ -20,8 +19,6 @@ Item {
         anchors.fill: parent
         anchors.margins: Theme.islandPadding
         spacing: 6
-
-        // ==================== EN-TÊTE ====================
 
         RowLayout {
             Layout.fillWidth: true
@@ -64,8 +61,6 @@ Item {
             }
         }
 
-        // ==================== LISTE ====================
-
         Text {
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -86,7 +81,6 @@ Item {
             spacing: 4
             boundsBehavior: Flickable.StopAtBounds
 
-            // Les plus récentes en haut
             model: Notifs.history.slice().reverse()
 
             delegate: Rectangle {

@@ -19,7 +19,9 @@ QtObject {
     readonly property color white: "#ffffff"
 
     // Police
-    readonly property string fontFamily: "JetBrains Mono"
+    // Nom exact de la famille installée : "JetBrains Mono" ne résout pas et
+    // fontconfig retombe sur DejaVu Sans Mono
+    readonly property string fontFamily: "JetBrainsMono Nerd Font"
 
     // Sizes
     readonly property int headerFontSize: 22
@@ -54,7 +56,7 @@ QtObject {
     readonly property int batteryFlashTimeout: 2400
     readonly property int notifTimeout: 5000
     readonly property int notifMaxTimeout: 10000
-    readonly property int pinTimeout: 5000
+    readonly property int workspaceTimeout: 2000
 
     // Formes
     readonly property int islandRadius: 18
@@ -62,11 +64,15 @@ QtObject {
     readonly property int cornerRadius: 14
     readonly property int islandPadding: 14
 
+    readonly property int dotSize: 10
+    readonly property int dotSpacing: 4
+
     // Dimensions par état
     readonly property int stripWidth: 120
     readonly property int stripHeight: 4
 
-    readonly property int hourWidth: 150
+    readonly property int hourWidth: 90
+    readonly property int hourWorkspacesWidth: 140
     readonly property int hourHeight: 30
 
     readonly property int mediaWidth: 440
@@ -81,12 +87,15 @@ QtObject {
     readonly property int notifCenterWidth: 400
     readonly property int notifCenterMaxHeight: 420
 
+    readonly property int powerMenuWidth: 412
+    readonly property int powerMenuHeight: 224
+
+    readonly property int powerActionWidth: 120
+    readonly property int powerActionHeight: 92
+
     // Hauteur de la fenêtre layer-shell : doit contenir l'état le plus grand
     readonly property int islandWindowHeight: notifCenterMaxHeight + 20
 
     // Bande de survol invisible qui réveille le strip
     readonly property int hoverBandHeight: 4
-
-    // Respiration entre le bas de l'island et le haut des fenêtres
-    readonly property int islandGap: 8
 }

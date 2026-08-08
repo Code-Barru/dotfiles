@@ -1,6 +1,5 @@
 import Quickshell
 import Quickshell.Wayland
-import Quickshell.Hyprland
 import QtQuick
 import ".."
 import "../services"
@@ -12,6 +11,7 @@ PanelWindow {
     readonly property string state: IslandState.state
     readonly property bool isStrip: state === "strip"
     readonly property bool isNotifCenter: state === "notifCenter"
+    readonly property bool isPowerMenu: state === "powerMenu"
     readonly property bool surfaceHidden: isStrip && !IslandState.stripVisible
 
     // Contenu réellement monté : décalé d'un demi-fondu par rapport à l'état,
@@ -24,23 +24,49 @@ PanelWindow {
         right: true
     }
 
-    implicitHeight: Theme.islandWindowHeight
+    // États dont on doit pouvoir sortir en cliquant à côté
+    readonly property bool dismissable: isPowerMenu || isNotifCenter || IslandState.pinnedBase !== ""
+
+    // Plein écran seulement le temps de capter ce clic : une surface plein écran
+    // permanente sur la couche top empêcherait le direct scanout des jeux/vidéos
+    implicitHeight: dismissable ? screen.height : Theme.islandWindowHeight
     color: "transparent"
 
     WlrLayershell.namespace: "quickshell-island"
-    WlrLayershell.layer: WlrLayer.Overlay
-    WlrLayershell.keyboardFocus: isNotifCenter ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
 
-    // La zone réservée suit l'état de BASE, jamais les overlays : sinon un simple
-    // toast en plein écran ferait bouger toutes les fenêtres.
-    // En strip (plein écran) on ne réserve rien, sinon la hauteur de repos + une marge.
-    exclusiveZone: IslandState.baseState === "strip"
-        ? 0
-        : Theme.hourHeight + Theme.islandGap
+    // Top et non Overlay : en Overlay l'island passerait au-dessus des vidéos
+    // et des jeux en plein écran
+    WlrLayershell.layer: WlrLayer.Top
+    // Exclusive pour le power menu : Escape doit marcher sans cliquer dans le panneau d'abord
+    WlrLayershell.keyboardFocus: isPowerMenu
+        ? WlrKeyboardFocus.Exclusive
+        : (isNotifCenter ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None)
 
-    // Sans masque, la fenêtre pleine largeur avalerait tous les clics du haut de l'écran
+    // Island flottante : elle survole les fenêtres, rien n'est réservé
+    exclusiveZone: 0
+
+    // Sans masque, la fenêtre pleine largeur avalerait tous les clics du haut de
+    // l'écran. En état refermable au contraire elle les capte tous, pour que le
+    // premier clic à côté ramène au défaut.
     mask: Region {
-        item: surface
+        item: island.dismissable ? fullArea : surface
+    }
+
+    Item {
+        id: fullArea
+        anchors.fill: parent
+    }
+
+    MouseArea {
+        z: -1
+        anchors.fill: parent
+        enabled: island.dismissable
+        acceptedButtons: Qt.AllButtons
+
+        onPressed: mouse => {
+            mouse.accepted = true
+            IslandState.resetState()
+        }
     }
 
     // ==================== DIMENSIONS PAR ÉTAT ====================
@@ -57,8 +83,13 @@ PanelWindow {
             return { w: Theme.notifWidth, h: Theme.notifHeight }
         case "notifCenter":
             return { w: Theme.notifCenterWidth, h: island.notifCenterHeight }
+        case "powerMenu":
+            return { w: Theme.powerMenuWidth, h: Theme.powerMenuHeight }
         }
-        return { w: Theme.hourWidth, h: Theme.hourHeight }
+        return {
+            w: Workspaces.revealed ? Theme.hourWorkspacesWidth : Theme.hourWidth,
+            h: Theme.hourHeight
+        }
     }
 
     readonly property int notifCenterHeight: Math.min(
@@ -104,6 +135,7 @@ PanelWindow {
             id: contentLoader
 
             anchors.fill: parent
+            focus: true
             sourceComponent: island.componentFor(island.displayedState)
         }
     }
@@ -118,6 +150,7 @@ PanelWindow {
             IslandState.clearOverlay()
             break
         case "notifCenter":
+        case "powerMenu":
         case "media":
             // Les enfants gèrent leurs propres clics
             break
@@ -178,14 +211,6 @@ PanelWindow {
         }
     }
 
-    // ==================== FERMETURE DU CENTRE DE NOTIFS ====================
-
-    HyprlandFocusGrab {
-        windows: [island]
-        active: island.isNotifCenter
-        onCleared: IslandState.clearOverlay()
-    }
-
     // ==================== CONTENUS ====================
 
     function componentFor(name) {
@@ -200,6 +225,8 @@ PanelWindow {
             return notifComponent
         case "notifCenter":
             return notifCenterComponent
+        case "powerMenu":
+            return powerMenuComponent
         }
         return hourComponent
     }
@@ -210,4 +237,5 @@ PanelWindow {
     Component { id: flashComponent; FlashState {} }
     Component { id: notifComponent; NotifState {} }
     Component { id: notifCenterComponent; NotifCenterState {} }
+    Component { id: powerMenuComponent; PowerMenuState {} }
 }
