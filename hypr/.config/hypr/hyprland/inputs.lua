@@ -4,11 +4,6 @@ hl.gesture({
     action = "workspace",
 })
 
-hl.device({
-    name = "epic-mouse-v1",
-    sensitivity = -0.5,
-})
-
 hl.config({
     input = {
         kb_layout = "fr",
@@ -19,7 +14,5 @@ hl.config({
         },
         kb_options = "ctrl:nocaps",
     },
-    -- Example per-device config
-    -- See https://wiki.hyprland.org/Configuring/Keywords/#per-device-input-configs for more
 })
 
