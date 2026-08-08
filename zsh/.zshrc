@@ -22,7 +22,6 @@ export PATH="$PATH:/home/codebarre/.cargo/bin"
 plugins=(
   git
   zsh-autosuggestions
-  # zsh-syntax-highlighting
   fast-syntax-highlighting
   docker
   docker-compose
@@ -34,5 +33,4 @@ eval "$(zoxide init zsh --cmd cd)"
 eval "$(starship init zsh)"
 alias ff='fastfetch'
 alias vim=nvim
-alias para='cd ~/notes && nvim ~/notes/index.norg'
 alias lg='lazygit'
