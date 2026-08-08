@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell.Io
-import "../controlcenter"
+import ".."
 
 Rectangle {
     id: root

@@ -17,8 +17,13 @@ hl.bind(mainMod .. " + SHIFT + L", hl.dsp.exec_cmd("hyprlock"))
 hl.bind(mainMod .. " + SHIFT + R", hl.dsp.exec_cmd("pkill quickshell; quickshell"))
 hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }))
 hl.bind("Print", hl.dsp.exec_cmd("mkdir -p ~/screenshots && hyprshot -m region -o ~/screenshots"))
-hl.bind(mainMod .. " + C", hl.dsp.global("quickshell:controlcenter_toggle"))
 hl.bind(mainMod .. " + Escape", hl.dsp.global("quickshell:powermenu_toggle"))
+
+-- Dynamic Island
+hl.bind(mainMod .. " + N", hl.dsp.global("quickshell:island_notifications"))
+hl.bind(mainMod .. " + M", hl.dsp.global("quickshell:island_media"))
+hl.bind(mainMod .. " + I", hl.dsp.global("quickshell:island_hour"))
+hl.bind(mainMod .. " + SHIFT + I", hl.dsp.global("quickshell:island_cycle"))
 
 -- Move focus with mainMod + arrow key
 hl.bind(mainMod .. " + left", hl.dsp.focus({ direction = "left" }))
@@ -63,15 +68,16 @@ hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(), { drag = true })
 hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { drag = true })
 
 -- Laptop multimedia keys for volume and LCD brightness
-hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true })
-hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"), { locked = true, repeating = true })
-hl.bind("XF86AudioMute", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"), { locked = true, repeating = true })
-hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"), { locked = true, repeating = true })
-hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%+"), { locked = true, repeating = true })
-hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%-"), { locked = true, repeating = true })
+hl.bind("XF86AudioRaiseVolume",  hl.dsp.global("quickshell:volume_up"),      { locked = true, repeating = true })
+hl.bind("XF86AudioLowerVolume",  hl.dsp.global("quickshell:volume_down"),    { locked = true, repeating = true })
+hl.bind("XF86AudioMute",         hl.dsp.global("quickshell:volume_mute"),    { locked = true })
+hl.bind("XF86AudioMicMute",      hl.dsp.global("quickshell:mic_mute"),       { locked = true })
+hl.bind("XF86MonBrightnessUp",   hl.dsp.global("quickshell:brightness_up"),  { locked = true, repeating = true })
+hl.bind("XF86MonBrightnessDown", hl.dsp.global("quickshell:brightness_down"),{ locked = true, repeating = true })
 
 -- Requires playerctl
-hl.bind("XF86AudioNext", hl.dsp.exec_cmd("playerctl next"), { locked = true })
-hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
-hl.bind("XF86AudioPlay", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
-hl.bind("XF86AudioPrev", hl.dsp.exec_cmd("playerctl previous"), { locked = true })
+hl.bind("XF86AudioNext",  hl.dsp.global("quickshell:media_next"),   { locked = true })
+hl.bind("XF86AudioPause", hl.dsp.global("quickshell:media_toggle"), { locked = true })
+hl.bind("XF86AudioPlay",  hl.dsp.global("quickshell:media_toggle"), { locked = true })
+hl.bind("XF86AudioPrev",  hl.dsp.global("quickshell:media_prev"),   { locked = true })
+

@@ -111,6 +111,19 @@ hl.animation({
     style = "fade",
 })
 
+-- Dynamic Island : flou derrière la surface, pas d'animation d'apparition
+-- (l'island gère ses propres transitions)
+hl.layer_rule({
+    name = "island-blur",
+    match = {
+        namespace = "quickshell-island",
+    },
+    blur = true,
+    -- La surface fait toute la largeur de l'écran : sans ce seuil, Hyprland
+    -- floute les 440px du haut au lieu des seuls pixels opaques de l'island
+    ignore_alpha = 0.5,
+})
+
 hl.workspace_rule({
     workspace = "w[tv1]",
     gaps_out = 0,

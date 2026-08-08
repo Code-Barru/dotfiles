@@ -1,0 +1,7 @@
+singleton WindowState 1.0 WindowState.qml
+singleton Power 1.0 Power.qml
+singleton Audio 1.0 Audio.qml
+singleton Brightness 1.0 Brightness.qml
+singleton Media 1.0 Media.qml
+singleton Notifs 1.0 Notifs.qml
+singleton IslandState 1.0 IslandState.qml
