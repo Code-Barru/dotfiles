@@ -13,7 +13,7 @@ hl.monitor({
     mode = "preferred",
     position = "auto",
     scale = "1",
-    mirror = "DP-1",
+    mirror = "eDP-1",
 })
 
 local programs = {
@@ -25,7 +25,7 @@ local programs = {
 
 hl.on("hyprland.start", function()
     hl.exec_cmd("quickshell")
-    hl.exec_cmd("wl-paste --watch cliphist store &")
+    hl.exec_cmd("wl-paste --watch cliphist store")
     hl.exec_cmd("hypridle")
     hl.exec_cmd("hyprpaper")
 end)
