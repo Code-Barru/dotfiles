@@ -83,6 +83,13 @@ Scope {
 
     GlobalShortcut {
         appid: "quickshell"
+        name: "lock"
+        description: "Verrouiller la session"
+        onPressed: Lock.lock()
+    }
+
+    GlobalShortcut {
+        appid: "quickshell"
         name: "powermenu_toggle"
         description: "Menu d'alimentation"
         onPressed: IslandState.requestState("powerMenu")

@@ -12,3 +12,6 @@ singleton Vpn 1.0 Vpn.qml
 singleton Workspaces 1.0 Workspaces.qml
 singleton Apps 1.0 Apps.qml
 singleton Wallpaper 1.0 Wallpaper.qml
+singleton Logind 1.0 Logind.qml
+singleton Idle 1.0 Idle.qml
+singleton Lock 1.0 Lock.qml

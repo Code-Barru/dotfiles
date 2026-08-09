@@ -107,6 +107,21 @@ QtObject {
     readonly property int wallpaperMaxHeight: wallpaperCellHeight * wallpaperMaxRows + islandPadding * 2
     readonly property int wallpaperFadeDuration: 600
 
+    readonly property real lockBlur: 1.0
+    readonly property int lockBlurMax: 64
+    readonly property real lockScrimOpacity: 0.35
+    readonly property int lockClockFontSize: 96
+    readonly property int lockDateFontSize: 22
+    readonly property int lockUserFontSize: 18
+    readonly property int lockFieldWidth: 360
+    readonly property int lockFieldHeight: 52
+    readonly property int lockFadeDuration: 250
+    readonly property int lockBlurDuration: 700
+    readonly property int lockDotSize: 12
+    readonly property int lockDotSpacing: 5
+    readonly property int lockDotDuration: 180
+    readonly property int lockMessageHeight: 20
+
     readonly property int flashWidth: 220
     readonly property int flashHeight: 36
 
