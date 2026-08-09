@@ -4,7 +4,6 @@ import Quickshell
 import Quickshell.Services.UPower
 import QtQuick
 
-// Batterie : expose l'état et signale le passage sous le seuil critique
 Singleton {
     id: root
 
@@ -19,7 +18,6 @@ Singleton {
 
     signal lowBattery(int percent)
 
-    // Latch anti-répétition : réarmé au-dessus de rearmThreshold ou au branchement
     property bool warned: false
 
     function check() {

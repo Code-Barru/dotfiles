@@ -2,9 +2,9 @@ pragma Singleton
 import QtQuick
 
 QtObject {
-    // Catppuccin Mocha Colors
+
     readonly property color base: "#1e1e2e"
-    readonly property color crust: "#11111b"
+    readonly property color crust: "black"
     readonly property color surface0: "#313244"
     readonly property color surface1: "#45475a"
     readonly property color surface2: "#585b70"
@@ -18,12 +18,8 @@ QtObject {
     readonly property color mauve: "#cba6f7"
     readonly property color white: "#ffffff"
 
-    // Police
-    // Nom exact de la famille installée : "JetBrains Mono" ne résout pas et
-    // fontconfig retombe sur DejaVu Sans Mono
     readonly property string fontFamily: "JetBrainsMono Nerd Font"
 
-    // Sizes
     readonly property int headerFontSize: 22
     readonly property int normalFontSize: 16
     readonly property int smallFontSize: 14
@@ -39,44 +35,58 @@ QtObject {
     readonly property int largeSpacing: 24
     readonly property int margin: 20
 
-    // Durations
     readonly property int fastDuration: 150
     readonly property int normalDuration: 200
     readonly property int slowDuration: 300
 
-    // ==================== DYNAMIC ISLAND ====================
-
-    // Animations
     readonly property int morphDuration: 320
+    readonly property int workspaceMorphDuration: 150
+    readonly property int workspaceFadeDuration: 80
     readonly property int fadeDuration: 180
 
-    // Délais des états
     readonly property int stripTimeout: 5000
     readonly property int flashTimeout: 1500
     readonly property int batteryFlashTimeout: 2400
     readonly property int notifTimeout: 5000
     readonly property int notifMaxTimeout: 10000
-    readonly property int workspaceTimeout: 2000
+    readonly property int mediaIntroTimeout: 2000
+    readonly property int workspaceTimeout: 1100
 
-    // Formes
     readonly property int islandRadius: 18
     readonly property int stripRadius: 3
     readonly property int cornerRadius: 14
     readonly property int islandPadding: 14
 
-    readonly property int dotSize: 10
-    readonly property int dotSpacing: 4
-
-    // Dimensions par état
     readonly property int stripWidth: 120
     readonly property int stripHeight: 4
 
     readonly property int hourWidth: 90
-    readonly property int hourWorkspacesWidth: 140
     readonly property int hourHeight: 30
 
-    readonly property int mediaWidth: 440
-    readonly property int mediaHeight: 116
+    readonly property int controlCenterWidth: 440
+    readonly property int controlCenterMinHeight: 116
+    readonly property int controlCenterMaxHeight: 560
+
+    readonly property int tileHeight: 44
+    readonly property int controlRowHeight: 28
+    readonly property int listMaxHeight: 160
+
+    readonly property int toggleSmallWidth: 40
+    readonly property int toggleSmallHeight: 22
+
+    readonly property int workspaceWidth: 150
+    readonly property int workspaceHeight: 30
+
+    readonly property int wormTrackWidth: 104
+    readonly property int wormHeight: 4
+    readonly property int wormSlots: 4
+
+    readonly property int mediaVizWidth: 135
+    readonly property int mediaVizHeight: 30
+
+    readonly property int barWidth: 3
+    readonly property int barSpacing: 2
+    readonly property int barMaxHeight: 16
 
     readonly property int flashWidth: 220
     readonly property int flashHeight: 36
@@ -93,9 +103,7 @@ QtObject {
     readonly property int powerActionWidth: 120
     readonly property int powerActionHeight: 92
 
-    // Hauteur de la fenêtre layer-shell : doit contenir l'état le plus grand
-    readonly property int islandWindowHeight: notifCenterMaxHeight + 20
+    readonly property int islandWindowHeight: Math.max(notifCenterMaxHeight, controlCenterMaxHeight) + 20
 
-    // Bande de survol invisible qui réveille le strip
     readonly property int hoverBandHeight: 4
 }

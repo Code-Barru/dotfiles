@@ -50,8 +50,6 @@ Singleton {
         }
     }
 
-    // Les touches répètent plus vite que brightnessctl ne se termine, et réaffecter
-    // command pendant que le Process tourne est une erreur : on cumule les pas
     property int pendingDelta: 0
 
     Process {

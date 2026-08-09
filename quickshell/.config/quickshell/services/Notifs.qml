@@ -4,11 +4,12 @@ import Quickshell
 import Quickshell.Services.Notifications
 import QtQuick
 
-// Serveur de notifications freedesktop + historique
 Singleton {
     id: root
 
     readonly property int historyLimit: 20
+
+    property bool dnd: false
 
     readonly property var history: server.trackedNotifications?.values ?? []
     readonly property int count: history.length
@@ -29,7 +30,7 @@ Singleton {
         persistenceSupported: true
 
         onNotification: notif => {
-            // tracked garde l'objet vivant après le retour du callback
+
             notif.tracked = true
 
             root.latest = notif
@@ -38,8 +39,6 @@ Singleton {
         }
     }
 
-    // Les plus anciennes sortent quand l'historique déborde.
-    // La copie est nécessaire : dismiss() modifie la liste en cours d'itération.
     function trim() {
         const list = history.slice()
         for (let i = 0; i < list.length - historyLimit; i++)

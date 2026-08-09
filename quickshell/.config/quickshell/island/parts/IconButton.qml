@@ -1,7 +1,6 @@
 import QtQuick
 import "../.."
 
-// Bouton icône Nerd Font, utilisé par les contrôles média et le centre de notifs
 Item {
     id: root
 

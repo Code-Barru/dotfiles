@@ -5,4 +5,8 @@ singleton Brightness 1.0 Brightness.qml
 singleton Media 1.0 Media.qml
 singleton Notifs 1.0 Notifs.qml
 singleton IslandState 1.0 IslandState.qml
+singleton Cava 1.0 Cava.qml
+singleton Wifi 1.0 Wifi.qml
+singleton Bt 1.0 Bt.qml
+singleton Vpn 1.0 Vpn.qml
 singleton Workspaces 1.0 Workspaces.qml

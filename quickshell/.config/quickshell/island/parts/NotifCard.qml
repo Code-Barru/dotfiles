@@ -5,7 +5,6 @@ import QtQuick
 import QtQuick.Layouts
 import "../.."
 
-// Rendu d'une notification, partagé entre le toast et le centre de notifications
 Item {
     id: root
 
@@ -24,8 +23,6 @@ Item {
 
         anchors.fill: parent
         spacing: 10
-
-        // ==================== ICÔNE ====================
 
         Item {
             Layout.preferredWidth: 40
@@ -71,8 +68,6 @@ Item {
             }
         }
 
-        // ==================== TEXTE ====================
-
         ColumnLayout {
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignVCenter
@@ -111,8 +106,6 @@ Item {
                 visible: text !== ""
             }
         }
-
-        // ==================== FERMETURE ====================
 
         IconButton {
             Layout.alignment: Qt.AlignTop

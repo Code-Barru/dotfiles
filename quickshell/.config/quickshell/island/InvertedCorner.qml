@@ -2,8 +2,6 @@ import QtQuick
 import QtQuick.Shapes
 import ".."
 
-// Coin inversé : raccorde le bord haut de l'écran au flanc de l'island par un
-// arc concave. Le remplissage occupe le carré moins le quart de disque.
 Item {
     id: root
 
@@ -43,7 +41,7 @@ Item {
                 x: root.radius
                 y: root.radius
             }
-            // Arc centré sur (0, radius) : concave vers l'island
+
             PathArc {
                 x: 0
                 y: 0

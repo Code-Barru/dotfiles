@@ -4,7 +4,6 @@ import Quickshell
 import Quickshell.Services.Mpris
 import QtQuick
 
-// Lecteur MPRIS actif : celui qui joue, sinon le premier disponible
 Singleton {
     id: root
 
@@ -26,14 +25,20 @@ Singleton {
     readonly property bool hasPlayer: player !== null
     readonly property bool isPlaying: player?.isPlaying ?? false
 
-    // Un lecteur arrêté (navigateur qui garde son interface MPRIS ouverte)
-    // ne doit pas monopoliser l'island
     readonly property bool active: hasPlayer && player.playbackState !== MprisPlaybackState.Stopped
 
     readonly property string title: player?.trackTitle ?? ""
     readonly property string artist: player?.trackArtist ?? ""
     readonly property string album: player?.trackAlbum ?? ""
     readonly property string artUrl: player?.trackArtUrl ?? ""
+
+    property string art: ""
+
+    onArtUrlChanged: if (artUrl !== "")
+        art = artUrl
+
+    onTitleChanged: if (artUrl === "")
+        art = ""
     readonly property string identity: player?.identity ?? ""
 
     readonly property bool canGoNext: player?.canGoNext ?? false
@@ -45,8 +50,6 @@ Singleton {
     readonly property real length: (player?.lengthSupported ?? false) ? (player?.length ?? 0) : 0
     readonly property real progress: length > 0 ? Math.max(0, Math.min(1, position / length)) : 0
 
-    // MprisPlayer.position ne se rafraîchit pas seule : on force la relecture
-    // uniquement quand l'island affiche réellement l'état média
     property bool positionTracking: false
 
     Timer {
@@ -71,7 +74,6 @@ Singleton {
             player.previous()
     }
 
-    // ratio dans [0, 1]
     function seekRatio(ratio) {
         if (canSeek && length > 0)
             player.position = Math.max(0, Math.min(1, ratio)) * length

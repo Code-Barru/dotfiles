@@ -1,8 +1,6 @@
 import QtQuick
 import ".."
 
-// Corps morphant de l'island : la taille est pilotée depuis l'extérieur,
-// toute la transformation vient des Behavior.
 Item {
     id: root
 
@@ -10,6 +8,7 @@ Item {
     property int targetHeight: Theme.hourHeight
     property int targetRadius: Theme.islandRadius
     property color surfaceColor: Theme.crust
+    property int morphDuration: Theme.morphDuration
 
     default property alias content: contentHolder.data
 
@@ -21,7 +20,7 @@ Item {
 
     Behavior on width {
         NumberAnimation {
-            duration: Theme.morphDuration
+            duration: root.morphDuration
             easing.type: Easing.OutBack
             easing.overshoot: 0.6
         }
@@ -29,15 +28,14 @@ Item {
 
     Behavior on height {
         NumberAnimation {
-            duration: Theme.morphDuration
+            duration: root.morphDuration
             easing.type: Easing.OutBack
             easing.overshoot: 0.6
         }
     }
 
-    // L'island pend du bord de l'écran : le haut reste droit, seul le bas s'arrondit
     Behavior on surfaceColor {
-        ColorAnimation { duration: Theme.morphDuration; easing.type: Easing.OutQuad }
+        ColorAnimation { duration: root.morphDuration; easing.type: Easing.OutQuad }
     }
 
     Rectangle {
@@ -53,10 +51,10 @@ Item {
         bottomRightRadius: root.targetRadius
 
         Behavior on bottomLeftRadius {
-            NumberAnimation { duration: Theme.morphDuration; easing.type: Easing.OutCubic }
+            NumberAnimation { duration: root.morphDuration; easing.type: Easing.OutCubic }
         }
         Behavior on bottomRightRadius {
-            NumberAnimation { duration: Theme.morphDuration; easing.type: Easing.OutCubic }
+            NumberAnimation { duration: root.morphDuration; easing.type: Easing.OutCubic }
         }
 
         Item {
@@ -65,9 +63,6 @@ Item {
         }
     }
 
-    // Marges négatives : en scale fractionnaire le flanc du corps tombe sur un
-    // demi-pixel physique, et les deux items le couvrent chacun à moitié sans
-    // que leurs alphas se recomposent — d'où une couture d'un pixel. On chevauche.
     InvertedCorner {
         anchors.right: body.left
         anchors.rightMargin: -1

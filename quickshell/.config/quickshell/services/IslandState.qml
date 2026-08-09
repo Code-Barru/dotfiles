@@ -7,13 +7,20 @@ import Quickshell.Services.Notifications
 import QtQuick
 import ".."
 
-// Base : strip | hour | media — Overlay : flash | notification | notifCenter
 Singleton {
     id: root
 
+    property bool mediaDismissed: false
+    property bool mediaExpanded: false
+
+    property bool panelHeld: false
+    property bool inputActive: false
+
     readonly property string computedBase: WindowState.isFullscreen
         ? "strip"
-        : (Media.active ? "media" : "hour")
+        : (Media.active && !mediaDismissed
+            ? (mediaExpanded ? "controlCenter" : "mediaViz")
+            : "hour")
 
     property string pinnedBase: ""
 
@@ -55,7 +62,15 @@ Singleton {
         stripTimer.restart()
     }
 
-    onStateChanged: wake()
+    onStateChanged: {
+        wake()
+
+        if (state !== "controlCenter") {
+            inputActive = false
+            panelHeld = false
+        }
+    }
+
     onBaseStateChanged: wake()
 
     Component.onCompleted: wake()
@@ -85,14 +100,31 @@ Singleton {
         wake()
     }
 
+    function showWorkspace() {
+        if (overlayState === "powerMenu" || overlayState === "notifCenter")
+            return
+
+        overlayState = "workspace"
+        overlayTimer.interval = Theme.workspaceTimeout
+        overlayTimer.restart()
+        wake()
+    }
+
+    Connections {
+        target: Workspaces
+
+        function onSwitched() {
+            root.showWorkspace()
+        }
+    }
+
     function showNotification(notif) {
-        if (overlayState === "notifCenter" || overlayState === "powerMenu")
+        if (Notifs.dnd || overlayState === "notifCenter" || overlayState === "powerMenu")
             return
 
         currentNotif = notif
         overlayState = "notification"
 
-        // expireTimeout vaut -1 quand l'app laisse le serveur décider
         const requested = (notif && notif.expireTimeout > 0)
             ? notif.expireTimeout
             : Theme.notifTimeout
@@ -123,6 +155,47 @@ Singleton {
         wake()
     }
 
+    Timer {
+        id: mediaIntroTimer
+        interval: Theme.mediaIntroTimeout
+        onTriggered: root.mediaExpanded = false
+    }
+
+    onPanelHeldChanged: {
+        if (panelHeld)
+            mediaIntroTimer.stop()
+        else if (mediaExpanded)
+            mediaIntroTimer.restart()
+    }
+
+    function announceMedia() {
+        mediaDismissed = false
+        mediaExpanded = true
+        if (!panelHeld)
+            mediaIntroTimer.restart()
+        wake()
+    }
+
+    function dismissMedia() {
+        mediaIntroTimer.stop()
+        mediaExpanded = false
+        mediaDismissed = true
+    }
+
+    Connections {
+        target: Media
+
+        function onActiveChanged() {
+            if (Media.active)
+                root.announceMedia()
+        }
+
+        function onTitleChanged() {
+            if (Media.active)
+                root.announceMedia()
+        }
+    }
+
     function pinBase(name) {
         pinnedBase = name
         wake()
@@ -138,8 +211,6 @@ Singleton {
         unpinBase()
     }
 
-    // Un raccourci d'état bascule vers cet état en repartant de zéro ; le même
-    // raccourci une seconde fois ramène au défaut
     function requestState(name) {
         const wasActive = state === name
 
@@ -160,13 +231,22 @@ Singleton {
         }
     }
 
+    function requestMedia() {
+        const pinned = pinnedBase === "controlCenter"
+
+        resetState()
+
+        if (!pinned)
+            pinBase("controlCenter")
+    }
+
     function cycle() {
         if (overlayState === "notifCenter") {
             clearOverlay()
             pinBase("hour")
-        } else if (baseState === "hour" && Media.hasPlayer) {
-            pinBase("media")
-        } else if (baseState === "media") {
+        } else if (baseState === "hour") {
+            pinBase("controlCenter")
+        } else if (baseState === "controlCenter" || baseState === "mediaViz") {
             openNotifCenter()
         } else {
             openNotifCenter()
@@ -206,8 +286,15 @@ Singleton {
     GlobalShortcut {
         appid: "quickshell"
         name: "island_media"
-        description: "Island : afficher le média"
-        onPressed: root.requestState("media")
+        description: "Island : Control Center"
+        onPressed: root.requestMedia()
+    }
+
+    GlobalShortcut {
+        appid: "quickshell"
+        name: "island_strip"
+        description: "Island : mode discret"
+        onPressed: root.requestState("strip")
     }
 
     GlobalShortcut {
@@ -228,10 +315,15 @@ Singleton {
         target: "island"
 
         function setState(name: string): string {
-            if (["hour", "media", "strip"].indexOf(name) !== -1) {
+            if (["hour", "controlCenter", "mediaViz", "strip"].indexOf(name) !== -1) {
                 root.clearOverlay()
                 root.pinBase(name)
                 return `base -> ${name}`
+            }
+
+            if (name === "workspace") {
+                root.showWorkspace()
+                return "overlay -> workspace"
             }
 
             if (name === "notifCenter") {
@@ -247,7 +339,6 @@ Singleton {
             return `état inconnu: ${name}`
         }
 
-        // value n'est utilisé que pour battery : volume et brightness se lisent en direct
         function flash(kind: string, value: int): string {
             root.flash(kind, value, kind === "battery")
             return `flash ${kind} ${value}`
@@ -260,7 +351,7 @@ Singleton {
         }
 
         function status(): string {
-            return `state=${root.state} base=${root.baseState} overlay=${root.overlayState} pinned=${root.pinnedBase} stripVisible=${root.stripVisible}`
+            return `state=${root.state} base=${root.baseState} overlay=${root.overlayState} pinned=${root.pinnedBase} dismissed=${root.mediaDismissed} held=${root.panelHeld} input=${root.inputActive} ws=${Workspaces.previous}->${Workspaces.active} stripVisible=${root.stripVisible}`
         }
     }
 }

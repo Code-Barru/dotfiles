@@ -34,3 +34,4 @@ eval "$(starship init zsh)"
 alias ff='fastfetch'
 alias vim=nvim
 alias lg='lazygit'
+alias spotify=spotify_player

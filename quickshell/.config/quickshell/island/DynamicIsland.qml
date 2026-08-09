@@ -14,8 +14,6 @@ PanelWindow {
     readonly property bool isPowerMenu: state === "powerMenu"
     readonly property bool surfaceHidden: isStrip && !IslandState.stripVisible
 
-    // Contenu réellement monté : décalé d'un demi-fondu par rapport à l'état,
-    // pour que la forme commence à bouger avant que le contenu ne change
     property string displayedState: IslandState.state
 
     anchors {
@@ -24,30 +22,25 @@ PanelWindow {
         right: true
     }
 
-    // États dont on doit pouvoir sortir en cliquant à côté
-    readonly property bool dismissable: isPowerMenu || isNotifCenter || IslandState.pinnedBase !== ""
+    readonly property bool dismissable: isPowerMenu || isNotifCenter
 
-    // Plein écran seulement le temps de capter ce clic : une surface plein écran
-    // permanente sur la couche top empêcherait le direct scanout des jeux/vidéos
     implicitHeight: dismissable ? screen.height : Theme.islandWindowHeight
     color: "transparent"
 
     WlrLayershell.namespace: "quickshell-island"
 
-    // Top et non Overlay : en Overlay l'island passerait au-dessus des vidéos
-    // et des jeux en plein écran
     WlrLayershell.layer: WlrLayer.Top
-    // Exclusive pour le power menu : Escape doit marcher sans cliquer dans le panneau d'abord
-    WlrLayershell.keyboardFocus: isPowerMenu
-        ? WlrKeyboardFocus.Exclusive
-        : (isNotifCenter ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None)
+    WlrLayershell.keyboardFocus: {
+        if (isPowerMenu)
+            return WlrKeyboardFocus.Exclusive
 
-    // Island flottante : elle survole les fenêtres, rien n'est réservé
+        if (isNotifCenter || IslandState.inputActive)
+            return WlrKeyboardFocus.OnDemand
+        return WlrKeyboardFocus.None
+    }
+
     exclusiveZone: 0
 
-    // Sans masque, la fenêtre pleine largeur avalerait tous les clics du haut de
-    // l'écran. En état refermable au contraire elle les capte tous, pour que le
-    // premier clic à côté ramène au défaut.
     mask: Region {
         item: island.dismissable ? fullArea : surface
     }
@@ -64,41 +57,69 @@ PanelWindow {
         acceptedButtons: Qt.AllButtons
 
         onPressed: mouse => {
-            mouse.accepted = true
-            IslandState.resetState()
+            mouse.accepted = true;
+            IslandState.resetState();
         }
     }
-
-    // ==================== DIMENSIONS PAR ÉTAT ====================
 
     function sizeFor(name) {
         switch (name) {
         case "strip":
-            return { w: Theme.stripWidth, h: Theme.stripHeight }
-        case "media":
-            return { w: Theme.mediaWidth, h: Theme.mediaHeight }
+            return {
+                w: Theme.stripWidth,
+                h: Theme.stripHeight
+            };
+        case "controlCenter":
+            return {
+                w: Theme.controlCenterWidth,
+                h: island.controlCenterHeight
+            };
+        case "mediaViz":
+            return {
+                w: Theme.mediaVizWidth,
+                h: Theme.mediaVizHeight
+            };
         case "flash":
-            return { w: Theme.flashWidth, h: Theme.flashHeight }
+            return {
+                w: Theme.flashWidth,
+                h: Theme.flashHeight
+            };
+        case "workspace":
+            return {
+                w: Theme.workspaceWidth,
+                h: Theme.workspaceHeight
+            };
         case "notification":
-            return { w: Theme.notifWidth, h: Theme.notifHeight }
+            return {
+                w: Theme.notifWidth,
+                h: Theme.notifHeight
+            };
         case "notifCenter":
-            return { w: Theme.notifCenterWidth, h: island.notifCenterHeight }
+            return {
+                w: Theme.notifCenterWidth,
+                h: island.notifCenterHeight
+            };
         case "powerMenu":
-            return { w: Theme.powerMenuWidth, h: Theme.powerMenuHeight }
+            return {
+                w: Theme.powerMenuWidth,
+                h: Theme.powerMenuHeight
+            };
         }
         return {
-            w: Workspaces.revealed ? Theme.hourWorkspacesWidth : Theme.hourWidth,
+            w: Theme.hourWidth,
             h: Theme.hourHeight
-        }
+        };
     }
 
-    readonly property int notifCenterHeight: Math.min(
-        Theme.notifCenterMaxHeight,
-        34 + Theme.islandPadding * 2 + Math.max(72, Notifs.count * 72))
+    readonly property int notifCenterHeight: Math.min(Theme.notifCenterMaxHeight, 34 + Theme.islandPadding * 2 + Math.max(72, Notifs.count * 72))
+
+    readonly property int controlCenterHeight: island.displayedState === "controlCenter"
+        ? Math.min(Theme.controlCenterMaxHeight, contentLoader.item?.implicitHeight ?? Theme.controlCenterMinHeight)
+        : Theme.controlCenterMinHeight
 
     readonly property var targetSize: sizeFor(island.state)
 
-    // ==================== SURFACE ====================
+    property int swapDuration: Theme.fadeDuration
 
     IslandSurface {
         id: surface
@@ -110,10 +131,10 @@ PanelWindow {
         targetHeight: island.targetSize.h
         targetRadius: island.isStrip ? Theme.stripRadius : Theme.islandRadius
 
-        // Le crust se confond avec un fond sombre : le strip a besoin d'être plus clair
+        morphDuration: island.state === "workspace" ? Theme.workspaceMorphDuration : Theme.morphDuration
+
         surfaceColor: island.isStrip ? Theme.surface1 : Theme.crust
 
-        // Le strip s'efface après inactivité mais garde sa zone de survol
         opacity: island.surfaceHidden ? 0.0 : 1.0
 
         Behavior on opacity {
@@ -124,7 +145,8 @@ PanelWindow {
         }
 
         HoverHandler {
-            onHoveredChanged: if (hovered) IslandState.wake()
+            onHoveredChanged: if (hovered)
+                IslandState.wake()
         }
 
         TapHandler {
@@ -143,29 +165,31 @@ PanelWindow {
     function handleTap() {
         switch (island.state) {
         case "notification":
-            Notifs.dismiss(IslandState.currentNotif)
-            IslandState.clearOverlay()
-            break
+            Notifs.dismiss(IslandState.currentNotif);
+            IslandState.clearOverlay();
+            break;
         case "flash":
-            IslandState.clearOverlay()
-            break
+        case "workspace":
+            IslandState.clearOverlay();
+            break;
+        case "mediaViz":
+            IslandState.dismissMedia();
+            break;
         case "notifCenter":
         case "powerMenu":
-        case "media":
-            // Les enfants gèrent leurs propres clics
-            break
+        case "controlCenter":
+            break;
         default:
-            IslandState.toggleNotifCenter()
+            IslandState.toggleNotifCenter();
         }
     }
-
-    // ==================== FONDU ENTRE CONTENUS ====================
 
     Connections {
         target: IslandState
 
         function onStateChanged() {
-            swapAnimation.restart()
+            island.swapDuration = IslandState.state === "workspace" ? Theme.workspaceFadeDuration : Theme.fadeDuration;
+            swapAnimation.restart();
         }
     }
 
@@ -177,14 +201,14 @@ PanelWindow {
                 target: contentLoader
                 property: "opacity"
                 to: 0
-                duration: Theme.fadeDuration / 2
+                duration: island.swapDuration / 2
                 easing.type: Easing.InQuad
             }
             NumberAnimation {
                 target: contentLoader
                 property: "scale"
                 to: 0.92
-                duration: Theme.fadeDuration / 2
+                duration: island.swapDuration / 2
                 easing.type: Easing.InQuad
             }
         }
@@ -198,44 +222,88 @@ PanelWindow {
                 target: contentLoader
                 property: "opacity"
                 to: 1
-                duration: Theme.fadeDuration
+                duration: island.swapDuration
                 easing.type: Easing.OutQuad
             }
             NumberAnimation {
                 target: contentLoader
                 property: "scale"
                 to: 1
-                duration: Theme.fadeDuration
+                duration: island.swapDuration
                 easing.type: Easing.OutQuad
             }
         }
     }
 
-    // ==================== CONTENUS ====================
-
     function componentFor(name) {
         switch (name) {
         case "strip":
-            return stripComponent
-        case "media":
-            return mediaComponent
+            return stripComponent;
+        case "controlCenter":
+            return controlCenterComponent;
+        case "mediaViz":
+            return mediaVizComponent;
         case "flash":
-            return flashComponent
+            return flashComponent;
+        case "workspace":
+            return workspaceComponent;
         case "notification":
-            return notifComponent
+            return notifComponent;
         case "notifCenter":
-            return notifCenterComponent
+            return notifCenterComponent;
         case "powerMenu":
-            return powerMenuComponent
+            return powerMenuComponent;
         }
-        return hourComponent
+        return hourComponent;
     }
 
-    Component { id: stripComponent; StripState {} }
-    Component { id: hourComponent; HourState {} }
-    Component { id: mediaComponent; MediaState {} }
-    Component { id: flashComponent; FlashState {} }
-    Component { id: notifComponent; NotifState {} }
-    Component { id: notifCenterComponent; NotifCenterState {} }
-    Component { id: powerMenuComponent; PowerMenuState {} }
+    Component {
+        id: stripComponent
+        StripState {}
+    }
+    Component {
+        id: hourComponent
+        HourState {}
+    }
+    Component {
+        id: controlCenterComponent
+        ControlCenterState {}
+    }
+    Component {
+        id: mediaVizComponent
+        MediaVizState {}
+    }
+
+    Binding {
+        target: Vpn
+        property: "watching"
+        value: island.displayedState === "controlCenter"
+    }
+
+    Binding {
+        target: Cava
+        property: "active"
+        value: island.displayedState === "mediaViz"
+            || (island.displayedState === "controlCenter" && Media.hasPlayer)
+    }
+    Component {
+        id: flashComponent
+        FlashState {}
+    }
+    Component {
+        id: workspaceComponent
+        WorkspaceState {}
+    }
+    Component {
+        id: notifComponent
+        NotifState {}
+    }
+    Component {
+        id: notifCenterComponent
+        NotifCenterState {}
+    }
+    Component {
+        id: powerMenuComponent
+        PowerMenuState {}
+    }
 }

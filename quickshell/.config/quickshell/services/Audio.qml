@@ -16,8 +16,6 @@ Singleton {
 
     readonly property real nodeVolume: sink?.audio?.volume ?? 0
 
-    // Pipewire ne relit pas la valeur écrite tout de suite : en répétition de touche
-    // les pas suivants repartiraient tous de l'ancienne valeur
     property real pendingVolume: -1
 
     readonly property real volume: pendingVolume >= 0 ? pendingVolume : nodeVolume
@@ -29,9 +27,18 @@ Singleton {
         onTriggered: root.pendingVolume = -1
     }
 
-    // Sans tracker les nodes ne sont pas liés et leurs propriétés restent invalides
+    readonly property var sinks: Pipewire.nodes.values.filter(n => n.isSink && !n.isStream)
+
     PwObjectTracker {
         objects: [root.sink, root.source]
+    }
+
+    function sinkLabel(node) {
+        return node?.description ?? node?.nickname ?? node?.name ?? ""
+    }
+
+    function setSink(node) {
+        Pipewire.preferredDefaultAudioSink = node
     }
 
     function setVolume(v) {

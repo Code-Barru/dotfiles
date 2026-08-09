@@ -1,7 +1,6 @@
 import QtQuick
 import "../.."
 
-// Barre de progression média, cliquable/draggable si le lecteur supporte le seek
 Item {
     id: root
 
@@ -30,7 +29,6 @@ Item {
             radius: parent.radius
             color: root.fillColor
 
-            // Pas d'animation pendant le drag, sinon la poignée flotte
             Behavior on width {
                 enabled: !root.dragging
                 NumberAnimation { duration: Theme.fastDuration; easing.type: Easing.OutCubic }

@@ -2,33 +2,57 @@ pragma Singleton
 
 import Quickshell
 import Quickshell.Hyprland
+import Quickshell.Io
 import QtQuick
 import ".."
 
 Singleton {
     id: root
 
-    readonly property int active: Hyprland.focusedWorkspace?.id ?? 0
+    property int active: 0
+    property int previous: 0
 
-    property bool revealed: false
+    signal switched
 
-    // Déclenché sur l'événement et non sur active : une liaison se réveillerait
-    // aussi à la résolution initiale, et les pastilles apparaîtraient au démarrage
+    function slotOf(id) {
+        return Math.min(Math.max(id, 1), Theme.wormSlots) - 1
+    }
+
     Connections {
         target: Hyprland
 
         function onRawEvent(event) {
-            if (event.name !== "workspace" && event.name !== "workspacev2")
+            if (event.name !== "workspace")
                 return
 
-            root.revealed = true
-            hideTimer.restart()
+            const id = parseInt(event.data)
+            if (!id || id === root.active)
+                return
+
+            root.previous = root.active
+            root.active = id
+
+            if (root.previous !== 0)
+                root.switched()
         }
     }
 
-    Timer {
-        id: hideTimer
-        interval: Theme.workspaceTimeout
-        onTriggered: root.revealed = false
+    Process {
+        id: seedProc
+
+        command: ["hyprctl", "activeworkspace", "-j"]
+
+        stdout: SplitParser {
+            onRead: line => {
+                if (root.active !== 0)
+                    return
+
+                const found = line.match(/"id"\s*:\s*(\d+)/)
+                if (found)
+                    root.active = parseInt(found[1])
+            }
+        }
     }
+
+    Component.onCompleted: seedProc.running = true
 }

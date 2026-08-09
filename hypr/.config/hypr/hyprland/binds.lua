@@ -23,17 +23,14 @@ hl.bind(mainMod .. " + Escape", hl.dsp.global("quickshell:powermenu_toggle"))
 hl.bind(mainMod .. " + N", hl.dsp.global("quickshell:island_notifications"))
 hl.bind(mainMod .. " + M", hl.dsp.global("quickshell:island_media"))
 hl.bind(mainMod .. " + I", hl.dsp.global("quickshell:island_hour"))
+hl.bind(mainMod .. " + H", hl.dsp.global("quickshell:island_strip"))
 hl.bind(mainMod .. " + SHIFT + I", hl.dsp.global("quickshell:island_cycle"))
 
 -- Move focus with mainMod + arrow key
 hl.bind(mainMod .. " + left", hl.dsp.focus({ direction = "left" }))
-hl.bind(mainMod .. " + h", hl.dsp.focus({ direction = "left" }))
 hl.bind(mainMod .. " + right", hl.dsp.focus({ direction = "right" }))
-hl.bind(mainMod .. " + l", hl.dsp.focus({ direction = "right" }))
 hl.bind(mainMod .. " + up", hl.dsp.focus({ direction = "up" }))
-hl.bind(mainMod .. " + k", hl.dsp.focus({ direction = "up" }))
 hl.bind(mainMod .. " + down", hl.dsp.focus({ direction = "down" }))
-hl.bind(mainMod .. " + j", hl.dsp.focus({ direction = "down" }))
 
 -- Switch workspaces with mainMod + [0-9]
 hl.bind(mainMod .. " + ampersand", hl.dsp.focus({ workspace = 1 }))
