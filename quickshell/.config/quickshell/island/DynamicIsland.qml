@@ -12,6 +12,8 @@ PanelWindow {
     readonly property bool isStrip: state === "strip"
     readonly property bool isNotifCenter: state === "notifCenter"
     readonly property bool isPowerMenu: state === "powerMenu"
+    readonly property bool isLauncher: state === "launcher"
+    readonly property bool isWallpaper: state === "wallpaper"
     readonly property bool surfaceHidden: isStrip && !IslandState.stripVisible
 
     property string displayedState: IslandState.state
@@ -22,7 +24,7 @@ PanelWindow {
         right: true
     }
 
-    readonly property bool dismissable: isPowerMenu || isNotifCenter
+    readonly property bool dismissable: isPowerMenu || isNotifCenter || isLauncher || isWallpaper
 
     implicitHeight: dismissable ? screen.height : Theme.islandWindowHeight
     color: "transparent"
@@ -31,7 +33,7 @@ PanelWindow {
 
     WlrLayershell.layer: WlrLayer.Top
     WlrLayershell.keyboardFocus: {
-        if (isPowerMenu)
+        if (isPowerMenu || isLauncher || isWallpaper)
             return WlrKeyboardFocus.Exclusive
 
         if (isNotifCenter || IslandState.inputActive)
@@ -109,6 +111,16 @@ PanelWindow {
                 w: Theme.powerMenuWidth,
                 h: Theme.powerMenuHeight
             };
+        case "launcher":
+            return {
+                w: Theme.launcherWidth,
+                h: island.launcherHeight
+            };
+        case "wallpaper":
+            return {
+                w: Theme.wallpaperPickerWidth,
+                h: island.wallpaperHeight
+            };
         }
         return {
             w: Theme.hourWidth,
@@ -121,6 +133,14 @@ PanelWindow {
     readonly property int controlCenterHeight: island.displayedState === "controlCenter"
         ? Math.min(Theme.controlCenterMaxHeight, contentLoader.item?.implicitHeight ?? Theme.controlCenterMinHeight)
         : Theme.controlCenterMinHeight
+
+    readonly property int launcherHeight: island.displayedState === "launcher"
+        ? Math.min(Theme.launcherMaxHeight, contentLoader.item?.implicitHeight ?? Theme.launcherMinHeight)
+        : Theme.launcherMinHeight
+
+    readonly property int wallpaperHeight: island.displayedState === "wallpaper"
+        ? Math.min(Theme.wallpaperMaxHeight, contentLoader.item?.implicitHeight ?? Theme.wallpaperMinHeight)
+        : Theme.wallpaperMinHeight
 
     readonly property var targetSize: sizeFor(island.state)
 
@@ -186,6 +206,8 @@ PanelWindow {
         case "notifCenter":
         case "powerMenu":
         case "controlCenter":
+        case "launcher":
+        case "wallpaper":
             break;
         default:
             IslandState.toggleNotifCenter();
@@ -263,6 +285,10 @@ PanelWindow {
             return notifCenterComponent;
         case "powerMenu":
             return powerMenuComponent;
+        case "launcher":
+            return launcherComponent;
+        case "wallpaper":
+            return wallpaperComponent;
         }
         return hourComponent;
     }
@@ -318,5 +344,13 @@ PanelWindow {
     Component {
         id: powerMenuComponent
         PowerMenuState {}
+    }
+    Component {
+        id: launcherComponent
+        LauncherState {}
+    }
+    Component {
+        id: wallpaperComponent
+        WallpaperState {}
     }
 }

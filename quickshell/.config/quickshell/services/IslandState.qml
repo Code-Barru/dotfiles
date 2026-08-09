@@ -25,6 +25,15 @@ Singleton {
 
     property string overlayState: ""
 
+    property string launcherMode: "apps"
+
+    function overlayBusy() {
+        return overlayState === "notifCenter"
+            || overlayState === "powerMenu"
+            || overlayState === "launcher"
+            || overlayState === "wallpaper"
+    }
+
     readonly property string state: overlayState !== "" ? overlayState : baseState
 
     property string flashKind: ""
@@ -86,7 +95,7 @@ Singleton {
     }
 
     function flash(kind, value, critical) {
-        if (overlayState === "powerMenu")
+        if (overlayState === "powerMenu" || overlayState === "launcher" || overlayState === "wallpaper")
             return
 
         flashKind = kind
@@ -99,7 +108,7 @@ Singleton {
     }
 
     function showWorkspace() {
-        if (overlayState === "powerMenu" || overlayState === "notifCenter")
+        if (overlayBusy())
             return
 
         overlayState = "workspace"
@@ -117,8 +126,7 @@ Singleton {
     }
 
     function showNotification(notif) {
-        if (Notifs.dnd || Media.isFromPlayer(notif)
-            || overlayState === "notifCenter" || overlayState === "powerMenu")
+        if (Notifs.dnd || Media.isFromPlayer(notif) || overlayBusy())
             return
 
         currentNotif = notif
@@ -147,6 +155,35 @@ Singleton {
             openNotifCenter()
     }
 
+    function openLauncher(mode) {
+        overlayTimer.stop()
+        currentNotif = null
+        launcherMode = mode
+        overlayState = "launcher"
+        wake()
+    }
+
+    function toggleLauncher(mode) {
+        if (overlayState === "launcher" && launcherMode === mode)
+            clearOverlay()
+        else
+            openLauncher(mode)
+    }
+
+    function openWallpaperPicker() {
+        overlayTimer.stop()
+        currentNotif = null
+        overlayState = "wallpaper"
+        wake()
+    }
+
+    function toggleWallpaperPicker() {
+        if (overlayState === "wallpaper")
+            clearOverlay()
+        else
+            openWallpaperPicker()
+    }
+
     function openPowerMenu() {
         overlayTimer.stop()
         currentNotif = null
@@ -167,7 +204,7 @@ Singleton {
     function announceMedia() {
         mediaDismissed = false
 
-        if (overlayState === "powerMenu" || overlayState === "notifCenter")
+        if (overlayBusy())
             return
 
         overlayState = "media"
@@ -299,6 +336,27 @@ Singleton {
 
     GlobalShortcut {
         appid: "quickshell"
+        name: "launcher_apps"
+        description: "Launcher : applications"
+        onPressed: root.toggleLauncher("apps")
+    }
+
+    GlobalShortcut {
+        appid: "quickshell"
+        name: "launcher_run"
+        description: "Launcher : commande"
+        onPressed: root.toggleLauncher("run")
+    }
+
+    GlobalShortcut {
+        appid: "quickshell"
+        name: "island_wallpaper"
+        description: "Island : choix du fond d'écran"
+        onPressed: root.toggleWallpaperPicker()
+    }
+
+    GlobalShortcut {
+        appid: "quickshell"
         name: "island_cycle"
         description: "Island : état suivant"
         onPressed: root.cycle()
@@ -327,6 +385,16 @@ Singleton {
             if (name === "powerMenu") {
                 root.openPowerMenu()
                 return "overlay -> powerMenu"
+            }
+
+            if (name === "launcher") {
+                root.openLauncher("apps")
+                return "overlay -> launcher"
+            }
+
+            if (name === "wallpaper") {
+                root.openWallpaperPicker()
+                return "overlay -> wallpaper"
             }
 
             return `état inconnu: ${name}`

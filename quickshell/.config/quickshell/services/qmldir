@@ -10,3 +10,5 @@ singleton Wifi 1.0 Wifi.qml
 singleton Bt 1.0 Bt.qml
 singleton Vpn 1.0 Vpn.qml
 singleton Workspaces 1.0 Workspaces.qml
+singleton Apps 1.0 Apps.qml
+singleton Wallpaper 1.0 Wallpaper.qml

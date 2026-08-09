@@ -87,9 +87,25 @@ QtObject {
     readonly property int mediaWidth: 440
     readonly property int mediaHeight: 104
 
+    readonly property int launcherWidth: 520
+    readonly property int launcherInputHeight: 36
+    readonly property int launcherRowHeight: 46
+    readonly property int launcherMaxRows: 6
+    readonly property int launcherMinHeight: launcherInputHeight + islandPadding * 2
+    readonly property int launcherMaxHeight: launcherMinHeight + launcherRowHeight * launcherMaxRows + spacing
+
     readonly property int barWidth: 3
     readonly property int barSpacing: 2
     readonly property int barMaxHeight: 16
+
+    readonly property int wallpaperColumns: 3
+    readonly property int wallpaperCellWidth: 168
+    readonly property int wallpaperCellHeight: 104
+    readonly property int wallpaperMaxRows: 3
+    readonly property int wallpaperPickerWidth: wallpaperColumns * wallpaperCellWidth + islandPadding * 2
+    readonly property int wallpaperMinHeight: wallpaperCellHeight + islandPadding * 2
+    readonly property int wallpaperMaxHeight: wallpaperCellHeight * wallpaperMaxRows + islandPadding * 2
+    readonly property int wallpaperFadeDuration: 600
 
     readonly property int flashWidth: 220
     readonly property int flashHeight: 36

@@ -18,7 +18,6 @@ hl.monitor({
 
 local programs = {
     terminal = "kitty",
-    menu = "wofi --show drun",
     browser = "zen-browser",
     ide = "zeditor",
 }
