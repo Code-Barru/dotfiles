@@ -4,7 +4,7 @@ import QtQuick
 QtObject {
 
     readonly property color base: "#1e1e2e"
-    readonly property color crust: "black"
+    readonly property color crust: "#11111b"
     readonly property color surface0: "#313244"
     readonly property color surface1: "#45475a"
     readonly property color surface2: "#585b70"
@@ -111,7 +111,6 @@ QtObject {
     readonly property int lockBlurMax: 64
     readonly property real lockScrimOpacity: 0.35
     readonly property int lockClockFontSize: 96
-    readonly property int lockDateFontSize: 22
     readonly property int lockUserFontSize: 18
     readonly property int lockFieldWidth: 360
     readonly property int lockFieldHeight: 52
@@ -121,6 +120,16 @@ QtObject {
     readonly property int lockDotSpacing: 5
     readonly property int lockDotDuration: 180
     readonly property int lockMessageHeight: 20
+
+    readonly property int lockCardWidth: 440
+    readonly property int lockCardHeight: 302
+    readonly property int lockCardInset: 16
+    readonly property int lockPanelWidth: lockCardWidth - lockCardInset * 2
+    readonly property int lockPanelHeight: lockCardHeight - lockCardInset * 2
+    readonly property int lockMorphDuration: 420
+    readonly property int lockSettleDuration: 260
+    readonly property int lockSettleOffset: 18
+    readonly property int lockUnlockTimeout: 1500
 
     readonly property int flashWidth: 220
     readonly property int flashHeight: 36
@@ -136,8 +145,6 @@ QtObject {
 
     readonly property int powerActionWidth: 120
     readonly property int powerActionHeight: 92
-
-    readonly property int islandWindowHeight: Math.max(notifCenterMaxHeight, controlCenterMaxHeight) + 20
 
     readonly property int hoverBandHeight: 4
 }

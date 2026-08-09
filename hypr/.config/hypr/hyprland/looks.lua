@@ -119,6 +119,7 @@ hl.layer_rule({
         namespace = "quickshell-island",
     },
     blur = true,
+    no_anim = true,
     -- La surface fait toute la largeur de l'écran : sans ce seuil, Hyprland
     -- floute les 440px du haut au lieu des seuls pixels opaques de l'island
     ignore_alpha = 0.5,

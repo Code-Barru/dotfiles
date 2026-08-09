@@ -7,6 +7,8 @@ Item {
     property int targetWidth: Theme.hourWidth
     property int targetHeight: Theme.hourHeight
     property int targetRadius: Theme.islandRadius
+    property int topRadius: 0
+    property real notchOpacity: 1
     property color surfaceColor: Theme.crust
     property int morphDuration: Theme.morphDuration
 
@@ -45,11 +47,17 @@ Item {
         color: root.surfaceColor
         clip: true
 
-        topLeftRadius: 0
-        topRightRadius: 0
+        topLeftRadius: root.topRadius
+        topRightRadius: root.topRadius
         bottomLeftRadius: root.targetRadius
         bottomRightRadius: root.targetRadius
 
+        Behavior on topLeftRadius {
+            NumberAnimation { duration: root.morphDuration; easing.type: Easing.OutCubic }
+        }
+        Behavior on topRightRadius {
+            NumberAnimation { duration: root.morphDuration; easing.type: Easing.OutCubic }
+        }
         Behavior on bottomLeftRadius {
             NumberAnimation { duration: root.morphDuration; easing.type: Easing.OutCubic }
         }
@@ -69,6 +77,7 @@ Item {
         anchors.top: body.top
         radius: root.cornerRadius
         fillColor: root.surfaceColor
+        opacity: root.notchOpacity
     }
 
     InvertedCorner {
@@ -78,5 +87,6 @@ Item {
         radius: root.cornerRadius
         fillColor: root.surfaceColor
         mirrored: true
+        opacity: root.notchOpacity
     }
 }

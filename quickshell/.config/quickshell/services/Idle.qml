@@ -12,7 +12,6 @@ Singleton {
     signal lockRequested
     signal suspendRequested
 
-    // paliers repris de hypridle.conf
     readonly property int dimTimeout: 300
     readonly property int lockTimeout: 315
     readonly property int dpmsTimeout: 360

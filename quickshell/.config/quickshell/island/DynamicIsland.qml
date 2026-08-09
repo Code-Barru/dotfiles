@@ -26,14 +26,16 @@ PanelWindow {
 
     readonly property bool dismissable: isPowerMenu || isNotifCenter || isLauncher || isWallpaper
 
-    implicitHeight: dismissable ? screen.height : Theme.islandWindowHeight
+    readonly property bool lockIntro: Lock.islandHeld
+
+    implicitHeight: screen.height
     color: "transparent"
 
     WlrLayershell.namespace: "quickshell-island"
 
     WlrLayershell.layer: WlrLayer.Top
     WlrLayershell.keyboardFocus: {
-        if (isPowerMenu || isLauncher || isWallpaper)
+        if (Lock.arming || isPowerMenu || isLauncher || isWallpaper)
             return WlrKeyboardFocus.Exclusive
 
         if (isNotifCenter || IslandState.inputActive)
@@ -44,7 +46,7 @@ PanelWindow {
     exclusiveZone: 0
 
     mask: Region {
-        item: island.dismissable ? fullArea : surface
+        item: (island.dismissable || island.lockIntro) ? fullArea : surface
     }
 
     Item {
@@ -152,15 +154,20 @@ PanelWindow {
         anchors.horizontalCenter: parent.horizontalCenter
         y: 0
 
-        targetWidth: island.targetSize.w
-        targetHeight: island.targetSize.h
-        targetRadius: island.isStrip ? Theme.stripRadius : Theme.islandRadius
+        targetWidth: island.lockIntro ? Theme.lockCardWidth : island.targetSize.w
+        targetHeight: island.lockIntro ? Theme.lockCardHeight : island.targetSize.h
+        targetRadius: island.lockIntro ? Theme.islandRadius : (island.isStrip ? Theme.stripRadius : Theme.islandRadius)
+        topRadius: island.lockIntro ? Theme.islandRadius : 0
 
-        morphDuration: island.state === "workspace" ? Theme.workspaceMorphDuration : Theme.morphDuration
+        morphDuration: {
+            if (Lock.arming || Lock.unlocking)
+                return Theme.lockMorphDuration;
+            return island.state === "workspace" ? Theme.workspaceMorphDuration : Theme.morphDuration;
+        }
 
-        surfaceColor: island.isStrip ? Theme.surface1 : Theme.crust
+        surfaceColor: island.lockIntro ? Theme.crust : (island.isStrip ? Theme.surface1 : Theme.crust)
 
-        opacity: island.surfaceHidden ? 0.0 : 1.0
+        opacity: island.surfaceHidden && !island.lockIntro ? 0.0 : 1.0
 
         Behavior on opacity {
             NumberAnimation {
@@ -184,6 +191,80 @@ PanelWindow {
             anchors.fill: parent
             focus: true
             sourceComponent: island.componentFor(island.displayedState)
+        }
+    }
+
+    onLockIntroChanged: {
+        if (lockIntro) {
+            outroAnimation.stop();
+            introAnimation.restart();
+            return;
+        }
+
+        introAnimation.stop();
+        outroAnimation.restart();
+    }
+
+    ParallelAnimation {
+        id: introAnimation
+
+        NumberAnimation {
+            target: surface
+            property: "y"
+            to: (island.screen.height - Theme.lockCardHeight) / 2
+            duration: Theme.lockMorphDuration
+            easing.type: Easing.OutCubic
+        }
+        NumberAnimation {
+            target: surface
+            property: "notchOpacity"
+            to: 0
+            duration: Theme.lockMorphDuration
+            easing.type: Easing.OutQuad
+        }
+        NumberAnimation {
+            target: contentLoader
+            property: "opacity"
+            to: 0
+            duration: Theme.lockMorphDuration / 2
+            easing.type: Easing.OutQuad
+        }
+    }
+
+    SequentialAnimation {
+        id: outroAnimation
+
+        ParallelAnimation {
+            NumberAnimation {
+                target: surface
+                property: "y"
+                to: 0
+                duration: Theme.lockMorphDuration
+                easing.type: Easing.OutCubic
+            }
+            NumberAnimation {
+                target: surface
+                property: "notchOpacity"
+                to: 1
+                duration: Theme.lockMorphDuration
+                easing.type: Easing.OutQuad
+            }
+            SequentialAnimation {
+                PauseAnimation {
+                    duration: Theme.lockMorphDuration / 2
+                }
+                NumberAnimation {
+                    target: contentLoader
+                    property: "opacity"
+                    to: 1
+                    duration: Theme.lockMorphDuration / 2
+                    easing.type: Easing.OutQuad
+                }
+            }
+        }
+
+        ScriptAction {
+            script: Lock.unlocking = false
         }
     }
 
@@ -219,6 +300,12 @@ PanelWindow {
 
         function onStateChanged() {
             island.swapDuration = IslandState.state === "workspace" ? Theme.workspaceFadeDuration : Theme.fadeDuration;
+
+            if (island.lockIntro) {
+                island.displayedState = IslandState.state;
+                return;
+            }
+
             swapAnimation.restart();
         }
     }
@@ -325,6 +412,7 @@ PanelWindow {
         property: "active"
         value: island.displayedState === "mediaViz" || island.displayedState === "media"
     }
+
     Component {
         id: flashComponent
         FlashState {}

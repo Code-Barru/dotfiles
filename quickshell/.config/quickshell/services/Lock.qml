@@ -5,36 +5,70 @@ import Quickshell.Io
 import Quickshell.Hyprland
 import Quickshell.Services.Pam
 import QtQuick
+import ".."
 
 Singleton {
     id: root
 
     property bool locked: false
     property bool arming: false
+    property bool islandHeld: false
     property bool sleepPending: false
+
+    property bool unlocking: false
 
     property string password: ""
     property bool failed: false
 
     readonly property string shotDir: "/dev/shm"
 
+    property bool capturing: false
+
     function shotPath(name) {
-        return `${shotDir}/qs-lock-${name}.png`;
+        return `${shotDir}/qs-lock-shot-${name}.png`;
     }
 
-    // Hyprland refuse le screencopy une fois la session verrouillée :
-    // la capture doit être terminée avant locked = true.
+    function cleanPath(name) {
+        return `${shotDir}/qs-lock-clean-${name}.png`;
+    }
+
+    function grimFor(pathFn) {
+        return ["sh", "-c", Quickshell.screens.map(s => `grim -l 0 -o '${s.name}' '${pathFn(s.name)}'`).join("; ")];
+    }
+
     function lock() {
-        if (locked || arming)
+        if (locked || arming || capturing)
             return;
 
-        arming = true;
+        capturing = true;
         password = "";
         failed = false;
 
-        // -l 0 : PNG sans compression, 66 ms au lieu de 2,7 s en 2880x1800
-        shotProc.command = ["sh", "-c", Quickshell.screens.map(s => `grim -l 0 -o '${s.name}' '${root.shotPath(s.name)}'`).join("; ")];
-        shotProc.running = true;
+        cleanProc.command = grimFor(root.cleanPath);
+        cleanProc.running = true;
+    }
+
+    Process {
+        id: cleanProc
+        command: []
+
+        onExited: {
+            root.capturing = false;
+            root.arming = true;
+            root.islandHeld = true;
+            introTimer.start();
+        }
+    }
+
+    Timer {
+        id: introTimer
+
+        interval: Theme.lockMorphDuration + 40
+
+        onTriggered: {
+            shotProc.command = root.grimFor(root.shotPath);
+            shotProc.running = true;
+        }
     }
 
     Process {
@@ -58,7 +92,7 @@ Singleton {
     }
 
     function submit() {
-        if (pam.active || password === "")
+        if (pam.active || unlocking || password === "")
             return;
 
         failed = false;
@@ -66,10 +100,17 @@ Singleton {
     }
 
     function finishUnlock() {
-        locked = false;
+        islandHeld = false;
         password = "";
         failed = false;
+        locked = false;
         cleanupProc.running = true;
+    }
+
+    Timer {
+        running: root.unlocking && root.locked
+        interval: Theme.lockUnlockTimeout
+        onTriggered: root.finishUnlock()
     }
 
     PamContext {
@@ -82,7 +123,7 @@ Singleton {
 
         onCompleted: result => {
             if (result === PamResult.Success) {
-                root.finishUnlock();
+                root.unlocking = true;
                 return;
             }
 
@@ -137,20 +178,8 @@ Singleton {
         }
     }
 
-    // FILET TEMPORAIRE
-    Timer {
-        running: root.locked
-        interval: 60000
-        onTriggered: root.finishUnlock()
-    }
-
     IpcHandler {
         target: "lock"
-
-        function fill(n: int): string {
-            root.password = "x".repeat(n);
-            return `len=${root.password.length}`;
-        }
 
         function lock(): string {
             root.lock();
@@ -158,7 +187,7 @@ Singleton {
         }
 
         function status(): string {
-            return `locked=${root.locked} arming=${root.arming} sleepPending=${root.sleepPending} pamActive=${pam.active} failed=${root.failed}`;
+            return `locked=${root.locked} capturing=${root.capturing} arming=${root.arming} islandHeld=${root.islandHeld} unlocking=${root.unlocking} sleepPending=${root.sleepPending} pamActive=${pam.active} failed=${root.failed}`;
         }
     }
 }

@@ -13,8 +13,6 @@ Singleton {
 
     property bool inhibitSleep: true
 
-    // dbus-monitor --system échoue sans privilège (eavesdropping refusé) ;
-    // gdbus monitor passe par AddMatch et reçoit les signaux broadcast.
     Process {
         running: true
         command: ["gdbus", "monitor", "--system", "--dest", "org.freedesktop.login1"]

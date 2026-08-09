@@ -3,6 +3,7 @@ import Quickshell.Wayland
 import QtQuick
 import QtQuick.Effects
 import ".."
+import "../island"
 import "../services"
 
 WlSessionLock {
@@ -15,16 +16,29 @@ WlSessionLock {
 
         color: Theme.crust
 
-        Image {
+        Item {
             id: shot
 
             anchors.fill: parent
             visible: false
 
-            source: surface.screen ? `file://${Lock.shotPath(surface.screen.name)}` : ""
-            fillMode: Image.PreserveAspectCrop
-            cache: false
-            asynchronous: false
+            Image {
+                anchors.fill: parent
+                source: surface.screen ? `file://${Lock.cleanPath(surface.screen.name)}` : ""
+                fillMode: Image.PreserveAspectCrop
+                cache: false
+                asynchronous: false
+            }
+
+            Image {
+                id: shotCard
+
+                anchors.fill: parent
+                source: surface.screen ? `file://${Lock.shotPath(surface.screen.name)}` : ""
+                fillMode: Image.PreserveAspectCrop
+                cache: false
+                asynchronous: false
+            }
         }
 
         MultiEffect {
@@ -49,17 +63,21 @@ WlSessionLock {
         }
 
         Rectangle {
+            id: scrim
+
             anchors.fill: parent
             color: "black"
             opacity: 0
+        }
 
-            NumberAnimation on opacity {
-                running: true
-                from: 0
-                to: Theme.lockScrimOpacity
-                duration: Theme.lockBlurDuration
-                easing.type: Easing.OutCubic
-            }
+        NumberAnimation {
+            target: scrim
+            property: "opacity"
+            running: true
+            from: 0
+            to: Theme.lockScrimOpacity
+            duration: Theme.lockBlurDuration
+            easing.type: Easing.OutCubic
         }
 
         SystemClock {
@@ -67,12 +85,52 @@ WlSessionLock {
             precision: SystemClock.Minutes
         }
 
-        Column {
-            anchors.centerIn: parent
-            spacing: Theme.largeSpacing
+        IslandSurface {
+            id: card
+
+            morphDuration: Theme.lockMorphDuration
+            surfaceColor: Theme.crust
+
+            targetWidth: Theme.lockCardWidth
+            targetHeight: Theme.lockCardHeight
+            targetRadius: Theme.islandRadius
+            topRadius: Theme.islandRadius
+            notchOpacity: 0
+
+            x: (surface.width - width) / 2
+            y: (surface.height - Theme.lockCardHeight) / 2
+        }
+
+        Rectangle {
+            id: panel
+
+            property bool settled: false
+
+            width: Theme.lockPanelWidth
+            height: Theme.lockPanelHeight
+            radius: Theme.islandRadius - Theme.lockCardInset / 2
+            color: Theme.base
+
+            x: (surface.width - width) / 2
+            y: (surface.height - height) / 2 + (settled ? 0 : Theme.lockSettleOffset)
+            opacity: settled ? 1 : 0
+
+            Behavior on y {
+                NumberAnimation {
+                    duration: Theme.lockSettleDuration
+                    easing.type: Easing.OutCubic
+                }
+            }
+
+            Behavior on opacity {
+                NumberAnimation {
+                    duration: Theme.lockSettleDuration
+                    easing.type: Easing.OutQuad
+                }
+            }
 
             Column {
-                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.centerIn: parent
                 spacing: Theme.spacing
 
                 Text {
@@ -83,25 +141,6 @@ WlSessionLock {
                     font.pixelSize: Theme.lockClockFontSize
                     font.bold: true
                 }
-
-                Text {
-                    anchors.horizontalCenter: parent.horizontalCenter
-
-                    // Qt.formatDateTime utilise la locale C, d'où une date en anglais
-                    text: {
-                        const d = clock.date.toLocaleDateString(Qt.locale("fr_FR"), "dddd d MMMM yyyy");
-                        return d.charAt(0).toUpperCase() + d.slice(1);
-                    }
-
-                    color: Theme.subtext0
-                    font.family: Theme.fontFamily
-                    font.pixelSize: Theme.lockDateFontSize
-                }
-            }
-
-            Column {
-                anchors.horizontalCenter: parent.horizontalCenter
-                spacing: Theme.spacing
 
                 Text {
                     anchors.horizontalCenter: parent.horizontalCenter
@@ -120,7 +159,7 @@ WlSessionLock {
                     height: Theme.lockFieldHeight
                     radius: Theme.islandRadius
 
-                    color: Theme.base
+                    color: Theme.crust
                     border.width: 2
                     border.color: Lock.failed ? Theme.red : Theme.surface1
 
@@ -130,7 +169,6 @@ WlSessionLock {
                         }
                     }
 
-                    // Invisible : la saisie est rendue par la rangée de points
                     TextInput {
                         id: input
 
@@ -138,6 +176,7 @@ WlSessionLock {
                         opacity: 0
 
                         echoMode: TextInput.Password
+                        enabled: !Lock.unlocking
 
                         text: Lock.password
                         onTextEdited: Lock.password = text
@@ -167,7 +206,6 @@ WlSessionLock {
                         x: (field.width - width) / 2
                         y: (field.height - height) / 2
 
-                        // la rangée se recentre à chaque caractère : on lisse le décalage
                         Behavior on x {
                             NumberAnimation {
                                 duration: Theme.lockDotDuration
@@ -175,8 +213,6 @@ WlSessionLock {
                             }
                         }
 
-                        // un modèle entier ferait régénérer tout le Repeater à chaque frappe :
-                        // les points déjà posés refondraient et l'animation en cours serait coupée
                         ListModel {
                             id: dotModel
                         }
@@ -225,7 +261,6 @@ WlSessionLock {
                     }
                 }
 
-                // hauteur réservée en permanence : l'erreur ne doit pas déplacer le champ
                 Item {
                     anchors.horizontalCenter: parent.horizontalCenter
 
@@ -249,6 +284,63 @@ WlSessionLock {
                         }
                     }
                 }
+            }
+        }
+
+        SequentialAnimation {
+            running: true
+
+            PauseAnimation {
+                duration: Theme.lockSettleDuration / 2
+            }
+            ScriptAction {
+                script: panel.settled = true
+            }
+        }
+
+        Connections {
+            target: Lock
+
+            function onUnlockingChanged() {
+                if (Lock.unlocking)
+                    outroAnimation.restart();
+            }
+        }
+
+        SequentialAnimation {
+            id: outroAnimation
+
+            ScriptAction {
+                script: panel.settled = false
+            }
+
+            NumberAnimation {
+                target: shotCard
+                property: "opacity"
+                to: 0
+                duration: Theme.lockSettleDuration
+                easing.type: Easing.InOutQuad
+            }
+
+            ParallelAnimation {
+                NumberAnimation {
+                    target: background
+                    property: "blur"
+                    to: 0
+                    duration: Theme.lockMorphDuration * 0.5
+                    easing.type: Easing.InQuad
+                }
+                NumberAnimation {
+                    target: scrim
+                    property: "opacity"
+                    to: 0
+                    duration: Theme.lockMorphDuration * 0.5
+                    easing.type: Easing.InQuad
+                }
+            }
+
+            ScriptAction {
+                script: Lock.finishUnlock()
             }
         }
     }
