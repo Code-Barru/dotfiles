@@ -25,7 +25,7 @@ Item {
         anchors.margins: 4
 
         radius: 8
-        color: Theme.surface0
+        color: Theme.surface
 
         Image {
             anchors.fill: parent
@@ -44,7 +44,7 @@ Item {
         radius: 8
         color: "transparent"
         border.width: root.selected ? 2 : (hover.hovered ? 1 : 0)
-        border.color: root.selected ? Theme.blue : Theme.surface2
+        border.color: root.selected ? Theme.accent : Theme.surfaceMax
 
         Behavior on border.width {
             NumberAnimation { duration: Theme.fastDuration }
@@ -60,12 +60,12 @@ Item {
         width: 20
         height: 20
         radius: 10
-        color: Theme.crust
+        color: Theme.bgDeep
 
         Text {
             anchors.centerIn: parent
             text: "󰄬"
-            color: Theme.blue
+            color: Theme.accent
             font.family: Theme.fontFamily
             font.pixelSize: Theme.tinyFontSize
         }

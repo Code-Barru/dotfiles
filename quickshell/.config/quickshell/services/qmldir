@@ -15,3 +15,4 @@ singleton Wallpaper 1.0 Wallpaper.qml
 singleton Logind 1.0 Logind.qml
 singleton Idle 1.0 Idle.qml
 singleton Lock 1.0 Lock.qml
+ThemeSync 1.0 ThemeSync.qml

@@ -52,9 +52,9 @@ Item {
             Layout.preferredHeight: Theme.launcherInputHeight
 
             radius: 10
-            color: Theme.base
+            color: Theme.bg
             border.width: 1
-            border.color: Theme.surface1
+            border.color: Theme.surfaceHi
 
             RowLayout {
                 anchors.fill: parent
@@ -64,7 +64,7 @@ Item {
 
                 Text {
                     text: root.isRun ? "󰆍" : "󰍉"
-                    color: root.isRun ? Theme.green : Theme.blue
+                    color: root.isRun ? Theme.success : Theme.accent
                     font.family: Theme.fontFamily
                     font.pixelSize: Theme.smallFontSize
                 }
@@ -73,7 +73,7 @@ Item {
                     id: input
 
                     Layout.fillWidth: true
-                    color: Theme.text
+                    color: Theme.fg
                     font.family: Theme.fontFamily
                     font.pixelSize: Theme.smallFontSize
                     selectByMouse: true
@@ -83,7 +83,7 @@ Item {
                         anchors.verticalCenter: parent.verticalCenter
                         visible: input.text === ""
                         text: root.isRun ? "Commande" : "Rechercher une application"
-                        color: Theme.overlay0
+                        color: Theme.muted
                         font: input.font
                     }
 

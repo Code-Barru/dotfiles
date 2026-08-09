@@ -17,13 +17,13 @@ RowLayout {
         Layout.preferredHeight: 76
         Layout.alignment: Qt.AlignVCenter
         radius: 10
-        color: Theme.surface0
+        color: Theme.surface
 
         Text {
             anchors.centerIn: parent
             visible: cover.status !== Image.Ready
             text: "󰝚"
-            color: Theme.overlay0
+            color: Theme.muted
             font.family: Theme.fontFamily
             font.pixelSize: 30
         }
@@ -50,7 +50,7 @@ RowLayout {
         Text {
             Layout.fillWidth: true
             text: Media.title !== "" ? Media.title : "Aucune lecture"
-            color: Theme.text
+            color: Theme.fg
             font.family: Theme.fontFamily
             font.pixelSize: Theme.smallFontSize
             font.bold: true
@@ -60,7 +60,7 @@ RowLayout {
         Text {
             Layout.fillWidth: true
             text: Media.artist
-            color: Theme.subtext0
+            color: Theme.fgDim
             font.family: Theme.fontFamily
             font.pixelSize: Theme.tinyFontSize
             elide: Text.ElideRight
@@ -81,7 +81,7 @@ RowLayout {
 
             Text {
                 text: Media.formatTime(Media.position)
-                color: Theme.overlay0
+                color: Theme.muted
                 font.family: Theme.fontFamily
                 font.pixelSize: Theme.tinyFontSize
             }
@@ -90,7 +90,7 @@ RowLayout {
 
             Text {
                 text: Media.length > 0 ? Media.formatTime(Media.length) : "--:--"
-                color: Theme.overlay0
+                color: Theme.muted
                 font.family: Theme.fontFamily
                 font.pixelSize: Theme.tinyFontSize
             }
@@ -116,7 +116,7 @@ RowLayout {
             IconButton {
                 icon: Media.isPlaying ? "󰏤" : "󰐊"
                 iconSize: Theme.largeFontSize
-                iconColor: Theme.blue
+                iconColor: Theme.accent
                 enabled: Media.canTogglePlaying
                 onClicked: Media.togglePlaying()
             }

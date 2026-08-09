@@ -16,8 +16,8 @@ Rectangle {
 
     color: {
         if (busy)
-            return Theme.yellow
-        return checked ? Theme.blue : Theme.surface1
+            return Theme.warning
+        return checked ? Theme.accent : Theme.surfaceHi
     }
 
     Behavior on color {
@@ -36,7 +36,7 @@ Rectangle {
         width: parent.height - 6
         height: width
         radius: width / 2
-        color: root.checked ? Theme.base : Theme.text
+        color: root.checked ? Theme.bg : Theme.fg
         x: root.checked ? parent.width - width - 3 : 3
         y: 3
 

@@ -23,7 +23,7 @@ ListView {
         width: ListView.view.width
         height: 30
         radius: 8
-        color: hover.hovered ? Theme.surface0 : "transparent"
+        color: hover.hovered ? Theme.surface : "transparent"
 
         HoverHandler {
             id: hover
@@ -42,7 +42,7 @@ ListView {
 
             Text {
                 text: "󰓃"
-                color: row.current ? Theme.blue : Theme.subtext0
+                color: row.current ? Theme.accent : Theme.fgDim
                 font.family: Theme.fontFamily
                 font.pixelSize: Theme.tinyFontSize
             }
@@ -50,7 +50,7 @@ ListView {
             Text {
                 Layout.fillWidth: true
                 text: Audio.sinkLabel(row.modelData)
-                color: row.current ? Theme.text : Theme.subtext0
+                color: row.current ? Theme.fg : Theme.fgDim
                 font.family: Theme.fontFamily
                 font.pixelSize: Theme.tinyFontSize
                 elide: Text.ElideRight
@@ -59,7 +59,7 @@ ListView {
             Text {
                 visible: row.current
                 text: "󰄬"
-                color: Theme.blue
+                color: Theme.accent
                 font.family: Theme.fontFamily
                 font.pixelSize: Theme.tinyFontSize
             }

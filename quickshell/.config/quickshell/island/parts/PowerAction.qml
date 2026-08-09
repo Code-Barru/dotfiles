@@ -8,14 +8,14 @@ Rectangle {
 
     property string icon: "󰐥"
     property string label: "Action"
-    property color actionColor: Theme.blue
+    property color actionColor: Theme.accent
     property string command: ""
     signal triggered()
 
     width: Theme.powerActionWidth
     height: Theme.powerActionHeight
     radius: 10
-    color: mouseArea.containsMouse ? Theme.surface1 : Theme.surface0
+    color: mouseArea.containsMouse ? Theme.surfaceHi : Theme.surface
 
     Behavior on color {
         ColorAnimation {
@@ -48,7 +48,7 @@ Rectangle {
             text: root.label
             font.pixelSize: Theme.tinyFontSize
             font.family: Theme.fontFamily
-            color: Theme.text
+            color: Theme.fg
             Layout.alignment: Qt.AlignHCenter
         }
     }

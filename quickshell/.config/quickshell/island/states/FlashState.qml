@@ -20,11 +20,11 @@ Item {
 
     readonly property color accent: {
         switch (kind) {
-        case "volume": return IslandState.flashCritical ? Theme.red : Theme.blue
-        case "brightness": return Theme.yellow
-        case "battery": return Theme.red
+        case "volume": return IslandState.flashCritical ? Theme.error : Theme.accent
+        case "brightness": return Theme.warning
+        case "battery": return Theme.error
         }
-        return Theme.blue
+        return Theme.accent
     }
 
     implicitWidth: Theme.flashWidth
@@ -51,7 +51,7 @@ Item {
             Layout.preferredHeight: 6
             Layout.alignment: Qt.AlignVCenter
             radius: 3
-            color: Theme.surface0
+            color: Theme.surface
 
             Rectangle {
                 width: Math.max(0, Math.min(1, IslandState.flashPercent / 100)) * parent.width
@@ -67,7 +67,7 @@ Item {
 
         Text {
             text: IslandState.flashPercent + "%"
-            color: Theme.text
+            color: Theme.fg
             font.family: Theme.fontFamily
             font.pixelSize: Theme.tinyFontSize
             font.bold: true

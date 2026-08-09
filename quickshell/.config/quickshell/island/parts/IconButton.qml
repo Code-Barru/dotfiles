@@ -6,7 +6,7 @@ Item {
 
     property string icon: ""
     property int iconSize: Theme.normalFontSize
-    property color iconColor: Theme.text
+    property color iconColor: Theme.fg
     property bool enabled: true
 
     signal clicked()
@@ -22,7 +22,7 @@ Item {
     Rectangle {
         anchors.fill: parent
         radius: width / 2
-        color: mouse.containsMouse && root.enabled ? Theme.surface0 : "transparent"
+        color: mouse.containsMouse && root.enabled ? Theme.surface : "transparent"
 
         Behavior on color {
             ColorAnimation { duration: Theme.fastDuration }

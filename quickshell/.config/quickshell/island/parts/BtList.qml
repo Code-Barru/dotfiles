@@ -22,7 +22,7 @@ ListView {
         width: ListView.view.width
         height: 30
         radius: 8
-        color: hover.hovered ? Theme.surface0 : "transparent"
+        color: hover.hovered ? Theme.surface : "transparent"
 
         HoverHandler {
             id: hover
@@ -41,7 +41,7 @@ ListView {
 
             Text {
                 text: row.modelData.connected ? "󰂱" : "󰂯"
-                color: row.modelData.connected ? Theme.blue : Theme.subtext0
+                color: row.modelData.connected ? Theme.accent : Theme.fgDim
                 font.family: Theme.fontFamily
                 font.pixelSize: Theme.tinyFontSize
             }
@@ -49,7 +49,7 @@ ListView {
             Text {
                 Layout.fillWidth: true
                 text: row.modelData.deviceName
-                color: row.modelData.connected ? Theme.text : Theme.subtext0
+                color: row.modelData.connected ? Theme.fg : Theme.fgDim
                 font.family: Theme.fontFamily
                 font.pixelSize: Theme.tinyFontSize
                 elide: Text.ElideRight
@@ -58,7 +58,7 @@ ListView {
             Text {
                 visible: row.modelData.batteryAvailable
                 text: `${Math.round(row.modelData.battery * 100)}%`
-                color: Theme.overlay0
+                color: Theme.muted
                 font.family: Theme.fontFamily
                 font.pixelSize: Theme.tinyFontSize
             }
@@ -66,7 +66,7 @@ ListView {
             Text {
                 visible: row.modelData.pairing || row.modelData.connected
                 text: row.modelData.pairing ? "󰑮" : "󰄬"
-                color: Theme.blue
+                color: Theme.accent
                 font.family: Theme.fontFamily
                 font.pixelSize: Theme.tinyFontSize
             }

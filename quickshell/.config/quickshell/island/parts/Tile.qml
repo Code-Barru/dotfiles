@@ -33,7 +33,7 @@ ColumnLayout {
         Layout.fillWidth: true
         Layout.preferredHeight: Theme.tileHeight
         radius: 12
-        color: header.hovered && root.expandable ? Theme.surface0 : Theme.base
+        color: header.hovered && root.expandable ? Theme.surface : Theme.bg
 
         Behavior on color {
             ColorAnimation { duration: Theme.fastDuration }
@@ -58,7 +58,7 @@ ColumnLayout {
 
             Text {
                 text: root.icon
-                color: root.checked ? Theme.blue : Theme.subtext0
+                color: root.checked ? Theme.accent : Theme.fgDim
                 font.family: Theme.fontFamily
                 font.pixelSize: Theme.largeFontSize
 
@@ -74,7 +74,7 @@ ColumnLayout {
                 Text {
                     Layout.fillWidth: true
                     text: root.label
-                    color: Theme.text
+                    color: Theme.fg
                     font.family: Theme.fontFamily
                     font.pixelSize: Theme.tinyFontSize
                     font.bold: true
@@ -84,7 +84,7 @@ ColumnLayout {
                 Text {
                     Layout.fillWidth: true
                     text: root.status
-                    color: Theme.overlay0
+                    color: Theme.muted
                     font.family: Theme.fontFamily
                     font.pixelSize: Theme.tinyFontSize
                     elide: Text.ElideRight
@@ -102,7 +102,7 @@ ColumnLayout {
             Text {
                 visible: root.expandable
                 text: "󰅀"
-                color: Theme.overlay0
+                color: Theme.muted
                 font.family: Theme.fontFamily
                 font.pixelSize: Theme.tinyFontSize
                 rotation: root.expanded ? 180 : 0

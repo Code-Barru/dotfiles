@@ -22,7 +22,7 @@ Item {
         PowerAction {
             icon: "󰐥"
             label: "Éteindre"
-            actionColor: Theme.red
+            actionColor: Theme.error
             command: "systemctl poweroff"
             onTriggered: IslandState.clearOverlay()
         }
@@ -30,7 +30,7 @@ Item {
         PowerAction {
             icon: "󰜉"
             label: "Redémarrer"
-            actionColor: Theme.yellow
+            actionColor: Theme.warning
             command: "systemctl reboot"
             onTriggered: IslandState.clearOverlay()
         }
@@ -38,7 +38,7 @@ Item {
         PowerAction {
             icon: "󰌾"
             label: "Verrouiller"
-            actionColor: Theme.blue
+            actionColor: Theme.accent
             command: "hyprlock"
             onTriggered: IslandState.clearOverlay()
         }
@@ -46,7 +46,7 @@ Item {
         PowerAction {
             icon: "󰍃"
             label: "Déconnexion"
-            actionColor: Theme.mauve
+            actionColor: Theme.accentAlt
             command: "hyprctl dispatch exit"
             onTriggered: IslandState.clearOverlay()
         }
@@ -54,7 +54,7 @@ Item {
         PowerAction {
             icon: "󰒲"
             label: "Suspendre"
-            actionColor: Theme.green
+            actionColor: Theme.success
             command: "systemctl suspend"
             onTriggered: IslandState.clearOverlay()
         }
@@ -62,7 +62,7 @@ Item {
         PowerAction {
             icon: "󰋊"
             label: "Hiberner"
-            actionColor: Theme.green
+            actionColor: Theme.success
             command: "systemctl hibernate"
             onTriggered: IslandState.clearOverlay()
         }

@@ -11,9 +11,6 @@ PanelWindow {
     readonly property string state: IslandState.state
     readonly property bool isStrip: state === "strip"
     readonly property bool isNotifCenter: state === "notifCenter"
-    readonly property bool isPowerMenu: state === "powerMenu"
-    readonly property bool isLauncher: state === "launcher"
-    readonly property bool isWallpaper: state === "wallpaper"
     readonly property bool surfaceHidden: isStrip && !IslandState.stripVisible
 
     property string displayedState: IslandState.state
@@ -24,7 +21,7 @@ PanelWindow {
         right: true
     }
 
-    readonly property bool dismissable: isPowerMenu || isNotifCenter || isLauncher || isWallpaper
+    readonly property bool dismissable: IslandState.overlayBusy
 
     readonly property bool lockIntro: Lock.islandHeld
 
@@ -35,7 +32,7 @@ PanelWindow {
 
     WlrLayershell.layer: WlrLayer.Top
     WlrLayershell.keyboardFocus: {
-        if (Lock.arming || isPowerMenu || isLauncher || isWallpaper)
+        if (Lock.arming || IslandState.overlayModal)
             return WlrKeyboardFocus.Exclusive
 
         if (isNotifCenter || IslandState.inputActive)
@@ -123,6 +120,11 @@ PanelWindow {
                 w: Theme.wallpaperPickerWidth,
                 h: island.wallpaperHeight
             };
+        case "theme":
+            return {
+                w: Theme.themePickerWidth,
+                h: island.themeHeight
+            };
         }
         return {
             w: Theme.hourWidth,
@@ -143,6 +145,10 @@ PanelWindow {
     readonly property int wallpaperHeight: island.displayedState === "wallpaper"
         ? Math.min(Theme.wallpaperMaxHeight, contentLoader.item?.implicitHeight ?? Theme.wallpaperMinHeight)
         : Theme.wallpaperMinHeight
+
+    readonly property int themeHeight: island.displayedState === "theme"
+        ? Math.min(Theme.themeMaxHeight, contentLoader.item?.implicitHeight ?? Theme.themeMinHeight)
+        : Theme.themeMinHeight
 
     readonly property var targetSize: sizeFor(island.state)
 
@@ -165,7 +171,7 @@ PanelWindow {
             return island.state === "workspace" ? Theme.workspaceMorphDuration : Theme.morphDuration;
         }
 
-        surfaceColor: island.lockIntro ? Theme.crust : (island.isStrip ? Theme.surface1 : Theme.crust)
+        surfaceColor: island.lockIntro ? Theme.bgDeep : (island.isStrip ? Theme.surfaceHi : Theme.bgDeep)
 
         opacity: island.surfaceHidden && !island.lockIntro ? 0.0 : 1.0
 
@@ -289,6 +295,7 @@ PanelWindow {
         case "controlCenter":
         case "launcher":
         case "wallpaper":
+        case "theme":
             break;
         default:
             IslandState.toggleNotifCenter();
@@ -376,6 +383,8 @@ PanelWindow {
             return launcherComponent;
         case "wallpaper":
             return wallpaperComponent;
+        case "theme":
+            return themeComponent;
         }
         return hourComponent;
     }
@@ -440,5 +449,9 @@ PanelWindow {
     Component {
         id: wallpaperComponent
         WallpaperState {}
+    }
+    Component {
+        id: themeComponent
+        ThemeState {}
     }
 }

@@ -32,13 +32,13 @@ Item {
             ClippingRectangle {
                 anchors.fill: parent
                 radius: 8
-                color: root.critical ? Theme.red : Theme.surface0
+                color: root.critical ? Theme.error : Theme.surface
 
                 Text {
                     anchors.centerIn: parent
                     visible: !image.visible && !appIcon.visible
                     text: root.critical ? "󰀪" : "󰂚"
-                    color: root.critical ? Theme.crust : Theme.subtext0
+                    color: root.critical ? Theme.bgDeep : Theme.fgDim
                     font.family: Theme.fontFamily
                     font.pixelSize: Theme.largeFontSize
                 }
@@ -76,7 +76,7 @@ Item {
             Text {
                 Layout.fillWidth: true
                 text: root.notif?.appName ?? ""
-                color: root.critical ? Theme.red : Theme.overlay0
+                color: root.critical ? Theme.error : Theme.muted
                 font.family: Theme.fontFamily
                 font.pixelSize: Theme.tinyFontSize
                 elide: Text.ElideRight
@@ -86,7 +86,7 @@ Item {
             Text {
                 Layout.fillWidth: true
                 text: root.notif?.summary ?? ""
-                color: Theme.text
+                color: Theme.fg
                 font.family: Theme.fontFamily
                 font.pixelSize: Theme.smallFontSize
                 font.bold: true
@@ -96,7 +96,7 @@ Item {
             Text {
                 Layout.fillWidth: true
                 text: root.notif?.body ?? ""
-                color: Theme.subtext0
+                color: Theme.fgDim
                 font.family: Theme.fontFamily
                 font.pixelSize: Theme.tinyFontSize
                 textFormat: Text.StyledText
@@ -112,7 +112,7 @@ Item {
             visible: root.showClose
             icon: "󰅖"
             iconSize: Theme.tinyFontSize
-            iconColor: Theme.overlay0
+            iconColor: Theme.muted
             onClicked: root.closeRequested()
         }
     }

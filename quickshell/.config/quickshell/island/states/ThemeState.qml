@@ -6,43 +6,40 @@ import "../parts"
 Item {
     id: root
 
-    readonly property int count: Wallpaper.count
-    readonly property int rows: Math.ceil(count / Theme.wallpaperColumns)
+    readonly property int count: Theme.count
 
     property int selected: 0
 
-    implicitWidth: Theme.wallpaperPickerWidth
+    implicitWidth: Theme.themePickerWidth
     implicitHeight: count === 0
-        ? Theme.wallpaperMinHeight
-        : Math.min(Theme.wallpaperMaxHeight, rows * Theme.wallpaperCellHeight + Theme.islandPadding * 2)
+        ? Theme.themeMinHeight
+        : Math.min(Theme.themeMaxHeight, count * Theme.themeRowHeight + Theme.islandPadding * 2)
 
     focus: true
 
-    Component.onCompleted: selected = Wallpaper.indexOf(Wallpaper.current)
+    onCountChanged: root.selected = Theme.indexOf(Theme.name)
 
     function move(delta) {
         if (count === 0)
             return
 
         selected = Math.max(0, Math.min(count - 1, selected + delta))
-        grid.positionViewAtIndex(selected, GridView.Contain)
+        list.positionViewAtIndex(selected, ListView.Contain)
     }
 
     function apply(index) {
-        const path = Wallpaper.pathAt(index)
-        if (path === "")
+        const name = Theme.nameAt(index)
+        if (name === "")
             return
 
-        Wallpaper.set(path)
+        Theme.set(name)
         IslandState.clearOverlay()
     }
 
     Keys.onEscapePressed: IslandState.clearOverlay()
 
-    Keys.onLeftPressed: root.move(-1)
-    Keys.onRightPressed: root.move(1)
-    Keys.onUpPressed: root.move(-Theme.wallpaperColumns)
-    Keys.onDownPressed: root.move(Theme.wallpaperColumns)
+    Keys.onUpPressed: root.move(-1)
+    Keys.onDownPressed: root.move(1)
 
     Keys.onReturnPressed: root.apply(root.selected)
     Keys.onEnterPressed: root.apply(root.selected)
@@ -50,14 +47,14 @@ Item {
     Text {
         anchors.centerIn: parent
         visible: root.count === 0
-        text: `Aucun wallpaper dans ${Wallpaper.directory}`
+        text: `Aucun thème dans ${Theme.directory}`
         color: Theme.muted
         font.family: Theme.fontFamily
         font.pixelSize: Theme.tinyFontSize
     }
 
-    GridView {
-        id: grid
+    ListView {
+        id: list
 
         anchors.fill: parent
         anchors.margins: Theme.islandPadding
@@ -66,21 +63,19 @@ Item {
         clip: true
         boundsBehavior: Flickable.StopAtBounds
 
-        cellWidth: Theme.wallpaperCellWidth
-        cellHeight: Theme.wallpaperCellHeight
+        model: Theme.model
 
-        model: Wallpaper.model
-
-        delegate: WallpaperTile {
+        delegate: ThemeTile {
             required property string filePath
+            required property string fileBaseName
             required property int index
 
-            width: grid.cellWidth
-            height: grid.cellHeight
+            width: list.width
+            height: Theme.themeRowHeight
 
             path: filePath
             selected: index === root.selected
-            active: filePath === Wallpaper.current
+            active: fileBaseName === Theme.name
 
             onActivated: root.apply(index)
         }

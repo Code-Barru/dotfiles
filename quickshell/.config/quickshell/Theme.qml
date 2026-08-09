@@ -1,22 +1,124 @@
 pragma Singleton
+import Quickshell
+import Quickshell.Io
+import Qt.labs.folderlistmodel
 import QtQuick
 
-QtObject {
+Singleton {
+    id: root
 
-    readonly property color base: "#1e1e2e"
-    readonly property color crust: "#11111b"
-    readonly property color surface0: "#313244"
-    readonly property color surface1: "#45475a"
-    readonly property color surface2: "#585b70"
-    readonly property color overlay0: "#6c7086"
-    readonly property color text: "#cdd6f4"
-    readonly property color subtext0: "#a6adc8"
-    readonly property color blue: "#89b4fa"
-    readonly property color green: "#a6e3a1"
-    readonly property color yellow: "#f9e2af"
-    readonly property color red: "#f38ba8"
-    readonly property color mauve: "#cba6f7"
+    readonly property string directory: `${Quickshell.env("HOME")}/dotfiles/themes`
+    readonly property string storePath: Quickshell.statePath("theme")
+
+    property string name: ""
+
+    property var meta: ({})
+
+    readonly property alias model: folder
+    readonly property int count: folder.count
+
+    property color bg: "#1e1e2e"
+    property color bgDeep: "#11111b"
+    property color surface: "#313244"
+    property color surfaceHi: "#45475a"
+    property color surfaceMax: "#585b70"
+    property color muted: "#6c7086"
+    property color fg: "#cdd6f4"
+    property color fgDim: "#a6adc8"
+    property color accent: "#89b4fa"
+    property color accentAlt: "#cba6f7"
+    property color success: "#a6e3a1"
+    property color warning: "#f9e2af"
+    property color error: "#f38ba8"
+    property color cyan: "#94e2d5"
+    property color magenta: "#f5c2e7"
+    property color orange: "#fab387"
+    property color black: "#45475a"
+    property color brightBlack: "#585b70"
+    property color brightFg: "#bac2de"
+
     readonly property color white: "#ffffff"
+
+    signal loaded()
+
+    function set(themeName) {
+        if (themeName === "" || themeName === root.name)
+            return
+
+        root.name = themeName
+        store.setText(themeName)
+    }
+
+    function ensureName() {
+        if (root.name === "")
+            root.name = "catppuccin-mocha"
+    }
+
+    function apply(raw) {
+        const data = JSON.parse(raw)
+
+        root.meta = data
+
+        for (const key in data.colors) {
+            if (root[key] !== undefined)
+                root[key] = data.colors[key]
+        }
+
+        root.loaded()
+    }
+
+    function nameAt(index) {
+        return folder.get(index, "fileBaseName") ?? ""
+    }
+
+    function indexOf(themeName) {
+        for (let i = 0; i < folder.count; i++) {
+            if (nameAt(i) === themeName)
+                return i
+        }
+        return 0
+    }
+
+    Process {
+        running: true
+        command: ["mkdir", "-p", Quickshell.stateDir]
+    }
+
+    FolderListModel {
+        id: folder
+
+        folder: `file://${root.directory}`
+        nameFilters: ["*.json"]
+        showDirs: false
+        sortField: FolderListModel.Name
+    }
+
+    FileView {
+        id: store
+
+        path: root.storePath
+        printErrors: false
+
+        onLoaded: {
+            const saved = text().trim()
+            if (saved !== "")
+                root.name = saved
+            root.ensureName()
+        }
+
+        onLoadFailed: root.ensureName()
+    }
+
+    FileView {
+        id: palette
+
+        path: root.name !== "" ? `${root.directory}/${root.name}.json` : ""
+        printErrors: false
+        watchChanges: true
+
+        onFileChanged: reload()
+        onLoaded: root.apply(text())
+    }
 
     readonly property string fontFamily: "JetBrainsMono Nerd Font"
 
@@ -106,6 +208,13 @@ QtObject {
     readonly property int wallpaperMinHeight: wallpaperCellHeight + islandPadding * 2
     readonly property int wallpaperMaxHeight: wallpaperCellHeight * wallpaperMaxRows + islandPadding * 2
     readonly property int wallpaperFadeDuration: 600
+
+    readonly property int themePickerWidth: 360
+    readonly property int themeRowHeight: 52
+    readonly property int themeMaxRows: 5
+    readonly property int themeMinHeight: themeRowHeight + islandPadding * 2
+    readonly property int themeMaxHeight: themeRowHeight * themeMaxRows + islandPadding * 2
+    readonly property int themeSwatchSize: 14
 
     readonly property real lockBlur: 1.0
     readonly property int lockBlurMax: 64

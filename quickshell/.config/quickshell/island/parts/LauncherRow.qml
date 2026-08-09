@@ -18,7 +18,7 @@ Rectangle {
 
     height: Theme.launcherRowHeight
     radius: 10
-    color: root.selected ? Theme.surface0 : (hover.hovered ? Theme.base : "transparent")
+    color: root.selected ? Theme.surface : (hover.hovered ? Theme.bg : "transparent")
 
     Behavior on color {
         ColorAnimation { duration: Theme.fastDuration }
@@ -48,7 +48,7 @@ Rectangle {
                 anchors.centerIn: parent
                 visible: !icon.visible
                 text: "󰣆"
-                color: Theme.overlay0
+                color: Theme.muted
                 font.family: Theme.fontFamily
                 font.pixelSize: Theme.largeFontSize
             }
@@ -71,7 +71,7 @@ Rectangle {
             Text {
                 Layout.fillWidth: true
                 text: root.app?.name ?? ""
-                color: Theme.text
+                color: Theme.fg
                 font.family: Theme.fontFamily
                 font.pixelSize: Theme.smallFontSize
                 elide: Text.ElideRight
@@ -80,7 +80,7 @@ Rectangle {
             Text {
                 Layout.fillWidth: true
                 text: root.app?.genericName ?? ""
-                color: Theme.overlay0
+                color: Theme.muted
                 font.family: Theme.fontFamily
                 font.pixelSize: Theme.tinyFontSize
                 elide: Text.ElideRight
@@ -91,7 +91,7 @@ Rectangle {
         Text {
             visible: root.selected
             text: "󰌑"
-            color: Theme.blue
+            color: Theme.accent
             font.family: Theme.fontFamily
             font.pixelSize: Theme.tinyFontSize
         }

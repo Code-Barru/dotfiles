@@ -27,7 +27,7 @@ Item {
 
             Text {
                 text: "Notifications"
-                color: Theme.text
+                color: Theme.fg
                 font.family: Theme.fontFamily
                 font.pixelSize: Theme.smallFontSize
                 font.bold: true
@@ -38,13 +38,13 @@ Item {
                 implicitWidth: countLabel.implicitWidth + 12
                 implicitHeight: 18
                 radius: 9
-                color: Theme.surface0
+                color: Theme.surface
 
                 Text {
                     id: countLabel
                     anchors.centerIn: parent
                     text: Notifs.count
-                    color: Theme.subtext0
+                    color: Theme.fgDim
                     font.family: Theme.fontFamily
                     font.pixelSize: Theme.tinyFontSize
                 }
@@ -56,7 +56,7 @@ Item {
                 visible: Notifs.count > 0
                 icon: "󰎟"
                 iconSize: Theme.smallFontSize
-                iconColor: Theme.overlay0
+                iconColor: Theme.muted
                 onClicked: Notifs.clearAll()
             }
         }
@@ -66,7 +66,7 @@ Item {
             Layout.fillHeight: true
             visible: Notifs.count === 0
             text: "Aucune notification"
-            color: Theme.overlay0
+            color: Theme.muted
             font.family: Theme.fontFamily
             font.pixelSize: Theme.tinyFontSize
             horizontalAlignment: Text.AlignHCenter
@@ -91,7 +91,7 @@ Item {
                 width: ListView.view.width
                 height: root.rowHeight - 4
                 radius: 10
-                color: Theme.base
+                color: Theme.bg
 
                 NotifCard {
                     anchors.fill: parent

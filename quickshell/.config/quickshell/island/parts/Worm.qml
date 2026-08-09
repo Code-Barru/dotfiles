@@ -12,7 +12,7 @@ Rectangle {
     implicitWidth: Theme.wormTrackWidth
     implicitHeight: Theme.wormHeight
     radius: height / 2
-    color: Theme.surface1
+    color: Theme.surfaceHi
 
     function jumpTo(i) {
         retract.stop()
@@ -49,7 +49,7 @@ Rectangle {
 
         height: parent.height
         radius: height / 2
-        color: Theme.blue
+        color: Theme.accent
 
         Behavior on x {
             NumberAnimation {

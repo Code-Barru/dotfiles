@@ -26,7 +26,7 @@ Variants {
         WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
         exclusionMode: ExclusionMode.Ignore
-        color: Theme.crust
+        color: Theme.bgDeep
 
         readonly property int decodeWidth: modelData.width * modelData.devicePixelRatio
         readonly property int decodeHeight: modelData.height * modelData.devicePixelRatio

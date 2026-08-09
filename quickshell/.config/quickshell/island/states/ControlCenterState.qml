@@ -116,7 +116,7 @@ Item {
             IconButton {
                 icon: Audio.muted ? "󰝟" : "󰕾"
                 iconSize: Theme.smallFontSize
-                iconColor: Audio.muted ? Theme.overlay0 : Theme.text
+                iconColor: Audio.muted ? Theme.muted : Theme.fg
                 onClicked: Audio.toggleMute()
             }
 
@@ -130,7 +130,7 @@ Item {
             Text {
                 Layout.preferredWidth: 32
                 text: `${Audio.percent}%`
-                color: Theme.overlay0
+                color: Theme.muted
                 font.family: Theme.fontFamily
                 font.pixelSize: Theme.tinyFontSize
                 horizontalAlignment: Text.AlignRight
@@ -139,7 +139,7 @@ Item {
             IconButton {
                 icon: Audio.micMuted ? "󰍭" : "󰍬"
                 iconSize: Theme.smallFontSize
-                iconColor: Audio.micMuted ? Theme.red : Theme.text
+                iconColor: Audio.micMuted ? Theme.error : Theme.fg
                 onClicked: Audio.toggleMicMute()
             }
         }
@@ -166,7 +166,7 @@ Item {
             Text {
                 Layout.preferredWidth: 32
                 text: `${Brightness.percent}%`
-                color: Theme.overlay0
+                color: Theme.muted
                 font.family: Theme.fontFamily
                 font.pixelSize: Theme.tinyFontSize
                 horizontalAlignment: Text.AlignRight
@@ -185,7 +185,7 @@ Item {
             Text {
                 visible: Power.present
                 text: Power.charging ? "󰂄" : "󰁹"
-                color: Power.percent <= Power.lowThreshold ? Theme.red : Theme.subtext0
+                color: Power.percent <= Power.lowThreshold ? Theme.error : Theme.fgDim
                 font.family: Theme.fontFamily
                 font.pixelSize: Theme.smallFontSize
             }
@@ -193,7 +193,7 @@ Item {
             Text {
                 visible: Power.present
                 text: `${Power.percent}%`
-                color: Theme.subtext0
+                color: Theme.fgDim
                 font.family: Theme.fontFamily
                 font.pixelSize: Theme.tinyFontSize
             }
@@ -205,14 +205,14 @@ Item {
             IconButton {
                 icon: Notifs.dnd ? "󰂛" : "󰂚"
                 iconSize: Theme.smallFontSize
-                iconColor: Notifs.dnd ? Theme.yellow : Theme.text
+                iconColor: Notifs.dnd ? Theme.warning : Theme.fg
                 onClicked: Notifs.dnd = !Notifs.dnd
             }
 
             IconButton {
                 icon: "󰐥"
                 iconSize: Theme.smallFontSize
-                iconColor: Theme.red
+                iconColor: Theme.error
                 onClicked: IslandState.openPowerMenu()
             }
         }

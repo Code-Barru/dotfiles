@@ -25,7 +25,7 @@ Item {
             Layout.preferredWidth: 20
             Layout.preferredHeight: 20
             radius: 5
-            color: Theme.surface0
+            color: Theme.surface
 
             Image {
                 anchors.fill: parent
@@ -40,7 +40,7 @@ Item {
 
         Text {
             text: Qt.formatDateTime(clock.date, "HH:mm")
-            color: Theme.text
+            color: Theme.fg
             font.family: Theme.fontFamily
             font.pixelSize: Theme.smallFontSize
         }

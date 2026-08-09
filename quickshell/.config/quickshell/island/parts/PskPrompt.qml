@@ -12,9 +12,9 @@ Rectangle {
 
     implicitHeight: 30
     radius: 8
-    color: Theme.base
+    color: Theme.bg
     border.width: 1
-    border.color: Theme.surface1
+    border.color: Theme.surfaceHi
 
     Component.onCompleted: {
         IslandState.inputActive = true
@@ -32,7 +32,7 @@ Rectangle {
         Text {
             anchors.verticalCenter: parent.verticalCenter
             text: "󰌾"
-            color: Theme.overlay0
+            color: Theme.muted
             font.family: Theme.fontFamily
             font.pixelSize: Theme.tinyFontSize
         }
@@ -42,7 +42,7 @@ Rectangle {
 
             anchors.verticalCenter: parent.verticalCenter
             width: parent.width - 60
-            color: Theme.text
+            color: Theme.fg
             font.family: Theme.fontFamily
             font.pixelSize: Theme.tinyFontSize
             echoMode: TextInput.Password
@@ -53,7 +53,7 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 visible: input.text === ""
                 text: `Mot de passe · ${root.ssid}`
-                color: Theme.overlay0
+                color: Theme.muted
                 font: input.font
             }
 
@@ -67,7 +67,7 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
             icon: "󰅖"
             iconSize: Theme.tinyFontSize
-            iconColor: Theme.overlay0
+            iconColor: Theme.muted
             implicitWidth: 20
             implicitHeight: 20
             onClicked: root.cancelled()

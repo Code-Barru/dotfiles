@@ -4,12 +4,16 @@ import Quickshell
 import Quickshell.Io
 import Qt.labs.folderlistmodel
 import QtQuick
+import ".."
 
 Singleton {
     id: root
 
-    readonly property string directory: `${Quickshell.env("HOME")}/dotfiles/wallpapers`
-    readonly property string storePath: Quickshell.statePath("wallpaper")
+    readonly property string directory: `${Quickshell.env("HOME")}/dotfiles/wallpapers/${Theme.name}`
+    readonly property string storePath: Quickshell.statePath("wallpapers.json")
+    readonly property string folderPrefix: `${directory}/`
+
+    property var saved: ({})
 
     property string current: ""
 
@@ -23,6 +27,14 @@ Singleton {
         command: ["mkdir", "-p", Quickshell.stateDir]
     }
 
+    Connections {
+        target: Theme
+
+        function onNameChanged() {
+            root.restore()
+        }
+    }
+
     FolderListModel {
         id: folder
 
@@ -31,7 +43,10 @@ Singleton {
         showDirs: false
         sortField: FolderListModel.Name
 
-        onCountChanged: root.ensureCurrent()
+        onStatusChanged: {
+            if (folder.status === FolderListModel.Ready)
+                root.ensureCurrent()
+        }
     }
 
     FileView {
@@ -41,13 +56,13 @@ Singleton {
         printErrors: false
 
         onLoaded: {
-            const saved = text().trim()
-            if (saved !== "")
-                root.current = saved
-            root.ensureCurrent()
+            const raw = text().trim()
+            if (raw !== "")
+                root.saved = JSON.parse(raw)
+            root.restore()
         }
 
-        onLoadFailed: root.ensureCurrent()
+        onLoadFailed: root.restore()
     }
 
     function pathAt(index) {
@@ -63,8 +78,20 @@ Singleton {
     }
 
     function ensureCurrent() {
-        if (current === "" && folder.count > 0)
-            set(pathAt(0))
+        if (current !== "" && current.startsWith(root.folderPrefix))
+            return
+
+        const first = folder.count > 0 ? pathAt(0) : ""
+
+        if (first.startsWith(root.folderPrefix))
+            set(first)
+    }
+
+    function restore() {
+        const path = saved[Theme.name] ?? ""
+
+        current = path.startsWith(root.folderPrefix) ? path : ""
+        ensureCurrent()
     }
 
     function set(path) {
@@ -72,6 +99,8 @@ Singleton {
             return
 
         current = path
-        store.setText(path)
+        saved[Theme.name] = path
+
+        store.setText(JSON.stringify(saved))
     }
 }

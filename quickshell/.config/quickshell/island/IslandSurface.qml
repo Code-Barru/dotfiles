@@ -9,7 +9,7 @@ Item {
     property int targetRadius: Theme.islandRadius
     property int topRadius: 0
     property real notchOpacity: 1
-    property color surfaceColor: Theme.crust
+    property color surfaceColor: Theme.bgDeep
     property int morphDuration: Theme.morphDuration
 
     default property alias content: contentHolder.data

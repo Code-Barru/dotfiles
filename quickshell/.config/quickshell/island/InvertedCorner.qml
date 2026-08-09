@@ -6,7 +6,7 @@ Item {
     id: root
 
     property real radius: Theme.cornerRadius
-    property color fillColor: Theme.crust
+    property color fillColor: Theme.bgDeep
     property bool mirrored: false
 
     implicitWidth: radius

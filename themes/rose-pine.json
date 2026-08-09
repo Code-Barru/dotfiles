@@ -1,0 +1,26 @@
+{
+  "label": "Rosé Pine",
+  "zed": "Rosé Pine",
+  "zedIcon": "Catppuccin Mocha",
+  "colors": {
+    "bg": "#191724",
+    "bgDeep": "#14121f",
+    "surface": "#1f1d2e",
+    "surfaceHi": "#26233a",
+    "surfaceMax": "#403d52",
+    "muted": "#6e6a86",
+    "fg": "#e0def4",
+    "fgDim": "#908caa",
+    "accent": "#9ccfd8",
+    "accentAlt": "#c4a7e7",
+    "success": "#31748f",
+    "warning": "#f6c177",
+    "error": "#eb6f92",
+    "cyan": "#9ccfd8",
+    "magenta": "#c4a7e7",
+    "orange": "#ebbcba",
+    "black": "#26233a",
+    "brightBlack": "#524f67",
+    "brightFg": "#e0def4"
+  }
+}

@@ -14,7 +14,7 @@ WlSessionLock {
     WlSessionLockSurface {
         id: surface
 
-        color: Theme.crust
+        color: Theme.bgDeep
 
         Item {
             id: shot
@@ -89,7 +89,7 @@ WlSessionLock {
             id: card
 
             morphDuration: Theme.lockMorphDuration
-            surfaceColor: Theme.crust
+            surfaceColor: Theme.bgDeep
 
             targetWidth: Theme.lockCardWidth
             targetHeight: Theme.lockCardHeight
@@ -109,7 +109,7 @@ WlSessionLock {
             width: Theme.lockPanelWidth
             height: Theme.lockPanelHeight
             radius: Theme.islandRadius - Theme.lockCardInset / 2
-            color: Theme.base
+            color: Theme.bg
 
             x: (surface.width - width) / 2
             y: (surface.height - height) / 2 + (settled ? 0 : Theme.lockSettleOffset)
@@ -145,7 +145,7 @@ WlSessionLock {
                 Text {
                     anchors.horizontalCenter: parent.horizontalCenter
                     text: `󰌾 ${Quickshell.env("USER")}`
-                    color: Theme.text
+                    color: Theme.fg
                     font.family: Theme.fontFamily
                     font.pixelSize: Theme.lockUserFontSize
                 }
@@ -159,9 +159,9 @@ WlSessionLock {
                     height: Theme.lockFieldHeight
                     radius: Theme.islandRadius
 
-                    color: Theme.crust
+                    color: Theme.bgDeep
                     border.width: 2
-                    border.color: Lock.failed ? Theme.red : Theme.surface1
+                    border.color: Lock.failed ? Theme.error : Theme.surfaceHi
 
                     Behavior on border.color {
                         ColorAnimation {
@@ -191,7 +191,7 @@ WlSessionLock {
                         anchors.centerIn: parent
                         visible: Lock.password === ""
                         text: "Mot de passe"
-                        color: Theme.overlay0
+                        color: Theme.muted
                         font.family: Theme.fontFamily
                         font.pixelSize: Theme.normalFontSize
                     }
@@ -246,7 +246,7 @@ WlSessionLock {
                                 width: Theme.lockDotSize
                                 height: Theme.lockDotSize
                                 radius: width / 2
-                                color: Theme.subtext0
+                                color: Theme.fgDim
 
                                 opacity: 0
 
@@ -273,7 +273,7 @@ WlSessionLock {
                         text: Lock.message
                         opacity: text !== "" ? 1 : 0
 
-                        color: Theme.red
+                        color: Theme.error
                         font.family: Theme.fontFamily
                         font.pixelSize: Theme.smallFontSize
 

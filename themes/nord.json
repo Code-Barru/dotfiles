@@ -1,0 +1,26 @@
+{
+  "label": "Nord",
+  "zed": "Nord",
+  "zedIcon": "Catppuccin Mocha",
+  "colors": {
+    "bg": "#2e3440",
+    "bgDeep": "#242933",
+    "surface": "#3b4252",
+    "surfaceHi": "#434c5e",
+    "surfaceMax": "#4c566a",
+    "muted": "#616e88",
+    "fg": "#eceff4",
+    "fgDim": "#d8dee9",
+    "accent": "#88c0d0",
+    "accentAlt": "#b48ead",
+    "success": "#a3be8c",
+    "warning": "#ebcb8b",
+    "error": "#bf616a",
+    "cyan": "#8fbcbb",
+    "magenta": "#b48ead",
+    "orange": "#d08770",
+    "black": "#3b4252",
+    "brightBlack": "#4c566a",
+    "brightFg": "#e5e9f0"
+  }
+}

@@ -29,7 +29,7 @@ Row {
 
             height: Math.max(Theme.barWidth, root.level(index) * root.maxHeight)
             radius: width / 2
-            color: Theme.blue
+            color: Theme.accent
 
             Behavior on height {
                 NumberAnimation {

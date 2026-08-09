@@ -1,5 +1,7 @@
 -- Refer to https://wiki.hyprland.org/Configuring/Variables/
 
+local c = require("hyprland.colors")
+
 -- https://wiki.hyprland.org/Configuring/Variables/#general
 
 hl.curve("easeOutQuint", { type = "bezier", points = { { 0.23, 1 }, { 0.32, 1 } } })
@@ -164,8 +166,8 @@ hl.config({
         border_size = 2,
         -- https://wiki.hyprland.org/Configuring/Variables/#variable-types for info about colors
         col = {
-            active_border = { colors = { "rgba(cba6f7ee)", "rgba(89b4faee)" }, angle = 45 },
-            inactive_border = "rgba(6c7086aa)",
+            active_border = { colors = { "rgba(" .. c.accentAlt .. "ee)", "rgba(" .. c.accent .. "ee)" }, angle = 45 },
+            inactive_border = "rgba(" .. c.muted .. "aa)",
         },
         -- Set to true enable resizing windows by clicking and dragging on borders and gaps
         resize_on_border = false,
@@ -215,7 +217,7 @@ hl.config({
     misc = {
         force_default_wallpaper = -1, -- Set to 0 or 1 to disable the anime mascot wallpapers
         disable_hyprland_logo = true, -- If true disables the random hyprland logo / anime girl background. :(
-        background_color = "rgb(1e1e2e)",
+        background_color = "rgb(" .. c.bg .. ")",
     },
 })
 

@@ -21,7 +21,7 @@ Rectangle {
     implicitWidth: 160
     implicitHeight: Theme.sliderHeight
     radius: height / 2
-    color: Theme.surface0
+    color: Theme.surface
     opacity: enabled ? 1.0 : 0.35
 
     Rectangle {
@@ -30,16 +30,16 @@ Rectangle {
         width: root.ratio * parent.width
         height: parent.height
         radius: parent.radius
-        color: Theme.blue
+        color: Theme.accent
     }
 
     Rectangle {
         width: 14
         height: 14
         radius: 7
-        color: Theme.blue
+        color: Theme.accent
         border.width: 2
-        border.color: Theme.text
+        border.color: Theme.fg
         x: Math.max(0, Math.min(parent.width - width, fill.width - width / 2))
         y: (parent.height - height) / 2
 

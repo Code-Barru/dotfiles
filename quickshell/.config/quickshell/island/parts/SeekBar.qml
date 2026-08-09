@@ -6,7 +6,7 @@ Item {
 
     property real progress: 0
     property bool seekable: false
-    property color fillColor: Theme.blue
+    property color fillColor: Theme.accent
 
     signal seeked(real ratio)
 
@@ -21,7 +21,7 @@ Item {
         width: parent.width
         height: 4
         radius: 2
-        color: Theme.surface0
+        color: Theme.surface
 
         Rectangle {
             width: Math.max(0, Math.min(1, root.progress)) * parent.width

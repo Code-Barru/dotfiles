@@ -1,0 +1,26 @@
+{
+  "label": "Catppuccin Mocha",
+  "zed": "Catppuccin Mocha (Blue Blur+)",
+  "zedIcon": "Catppuccin Mocha",
+  "colors": {
+    "bg": "#1e1e2e",
+    "bgDeep": "#11111b",
+    "surface": "#313244",
+    "surfaceHi": "#45475a",
+    "surfaceMax": "#585b70",
+    "muted": "#6c7086",
+    "fg": "#cdd6f4",
+    "fgDim": "#a6adc8",
+    "accent": "#89b4fa",
+    "accentAlt": "#cba6f7",
+    "success": "#a6e3a1",
+    "warning": "#f9e2af",
+    "error": "#f38ba8",
+    "cyan": "#94e2d5",
+    "magenta": "#f5c2e7",
+    "orange": "#fab387",
+    "black": "#45475a",
+    "brightBlack": "#585b70",
+    "brightFg": "#bac2de"
+  }
+}

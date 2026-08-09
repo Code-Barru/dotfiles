@@ -27,12 +27,12 @@ Singleton {
 
     property string launcherMode: "apps"
 
-    function overlayBusy() {
-        return overlayState === "notifCenter"
-            || overlayState === "powerMenu"
-            || overlayState === "launcher"
-            || overlayState === "wallpaper"
-    }
+    readonly property bool overlayModal: overlayState === "powerMenu"
+        || overlayState === "launcher"
+        || overlayState === "wallpaper"
+        || overlayState === "theme"
+
+    readonly property bool overlayBusy: overlayModal || overlayState === "notifCenter"
 
     readonly property string state: overlayState !== "" ? overlayState : baseState
 
@@ -95,7 +95,7 @@ Singleton {
     }
 
     function flash(kind, value, critical) {
-        if (overlayState === "powerMenu" || overlayState === "launcher" || overlayState === "wallpaper")
+        if (overlayModal)
             return
 
         flashKind = kind
@@ -108,7 +108,7 @@ Singleton {
     }
 
     function showWorkspace() {
-        if (overlayBusy())
+        if (overlayBusy)
             return
 
         overlayState = "workspace"
@@ -126,7 +126,7 @@ Singleton {
     }
 
     function showNotification(notif) {
-        if (Notifs.dnd || Media.isFromPlayer(notif) || overlayBusy())
+        if (Notifs.dnd || Media.isFromPlayer(notif) || overlayBusy)
             return
 
         currentNotif = notif
@@ -184,6 +184,20 @@ Singleton {
             openWallpaperPicker()
     }
 
+    function openThemePicker() {
+        overlayTimer.stop()
+        currentNotif = null
+        overlayState = "theme"
+        wake()
+    }
+
+    function toggleThemePicker() {
+        if (overlayState === "theme")
+            clearOverlay()
+        else
+            openThemePicker()
+    }
+
     function openPowerMenu() {
         overlayTimer.stop()
         currentNotif = null
@@ -204,7 +218,7 @@ Singleton {
     function announceMedia() {
         mediaDismissed = false
 
-        if (overlayBusy())
+        if (overlayBusy)
             return
 
         overlayState = "media"
@@ -357,6 +371,13 @@ Singleton {
 
     GlobalShortcut {
         appid: "quickshell"
+        name: "island_theme"
+        description: "Island : choix du thème"
+        onPressed: root.toggleThemePicker()
+    }
+
+    GlobalShortcut {
+        appid: "quickshell"
         name: "island_cycle"
         description: "Island : état suivant"
         onPressed: root.cycle()
@@ -395,6 +416,11 @@ Singleton {
             if (name === "wallpaper") {
                 root.openWallpaperPicker()
                 return "overlay -> wallpaper"
+            }
+
+            if (name === "theme") {
+                root.openThemePicker()
+                return "overlay -> theme"
             }
 
             return `état inconnu: ${name}`
