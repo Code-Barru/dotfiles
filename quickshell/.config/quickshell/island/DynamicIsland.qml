@@ -79,6 +79,11 @@ PanelWindow {
                 w: Theme.mediaVizWidth,
                 h: Theme.mediaVizHeight
             };
+        case "media":
+            return {
+                w: Theme.mediaWidth,
+                h: Theme.mediaHeight
+            };
         case "flash":
             return {
                 w: Theme.flashWidth,
@@ -175,6 +180,9 @@ PanelWindow {
         case "mediaViz":
             IslandState.dismissMedia();
             break;
+        case "media":
+            IslandState.clearOverlay();
+            break;
         case "notifCenter":
         case "powerMenu":
         case "controlCenter":
@@ -243,6 +251,8 @@ PanelWindow {
             return controlCenterComponent;
         case "mediaViz":
             return mediaVizComponent;
+        case "media":
+            return mediaComponent;
         case "flash":
             return flashComponent;
         case "workspace":
@@ -273,6 +283,10 @@ PanelWindow {
         id: mediaVizComponent
         MediaVizState {}
     }
+    Component {
+        id: mediaComponent
+        MediaState {}
+    }
 
     Binding {
         target: Vpn
@@ -283,8 +297,7 @@ PanelWindow {
     Binding {
         target: Cava
         property: "active"
-        value: island.displayedState === "mediaViz"
-            || (island.displayedState === "controlCenter" && Media.hasPlayer)
+        value: island.displayedState === "mediaViz" || island.displayedState === "media"
     }
     Component {
         id: flashComponent

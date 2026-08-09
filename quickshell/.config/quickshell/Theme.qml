@@ -84,6 +84,9 @@ QtObject {
     readonly property int mediaVizWidth: 135
     readonly property int mediaVizHeight: 30
 
+    readonly property int mediaWidth: 440
+    readonly property int mediaHeight: 104
+
     readonly property int barWidth: 3
     readonly property int barSpacing: 2
     readonly property int barMaxHeight: 16

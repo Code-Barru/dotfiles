@@ -21,6 +21,7 @@ hl.bind(mainMod .. " + Escape", hl.dsp.global("quickshell:powermenu_toggle"))
 
 -- Dynamic Island
 hl.bind(mainMod .. " + N", hl.dsp.global("quickshell:island_notifications"))
+hl.bind(mainMod .. " + C", hl.dsp.global("quickshell:island_controlcenter"))
 hl.bind(mainMod .. " + M", hl.dsp.global("quickshell:island_media"))
 hl.bind(mainMod .. " + I", hl.dsp.global("quickshell:island_hour"))
 hl.bind(mainMod .. " + H", hl.dsp.global("quickshell:island_strip"))

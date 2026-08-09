@@ -79,6 +79,30 @@ Singleton {
             player.position = Math.max(0, Math.min(1, ratio)) * length
     }
 
+    function normalizeName(name) {
+        return (name ?? "").toLowerCase().replace(/[^a-z0-9]/g, "")
+    }
+
+    function isFromPlayer(notif) {
+        if (!notif)
+            return false
+
+        const app = normalizeName(notif.appName)
+        const entry = normalizeName(notif.desktopEntry)
+
+        for (const p of players) {
+            const identity = normalizeName(p.identity)
+            const playerEntry = normalizeName(p.desktopEntry)
+
+            if (app !== "" && (app === identity || app === playerEntry))
+                return true
+            if (entry !== "" && (entry === identity || entry === playerEntry))
+                return true
+        }
+
+        return false
+    }
+
     function formatTime(seconds) {
         if (!isFinite(seconds) || seconds < 0)
             return "0:00"

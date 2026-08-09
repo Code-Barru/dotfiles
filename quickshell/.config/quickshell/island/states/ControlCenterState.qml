@@ -16,16 +16,6 @@ Item {
         openTile = openTile === name ? "" : name
     }
 
-    HoverHandler {
-        id: hover
-    }
-
-    Binding {
-        target: IslandState
-        property: "panelHeld"
-        value: hover.hovered || root.openTile !== ""
-    }
-
     Binding {
         target: Wifi
         property: "scanning"
@@ -47,18 +37,6 @@ Item {
         anchors.margins: Theme.islandPadding
 
         spacing: 8
-
-        MediaBlock {
-            Layout.fillWidth: true
-            visible: Media.hasPlayer
-        }
-
-        Rectangle {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 1
-            color: Theme.surface0
-            visible: Media.hasPlayer
-        }
 
         Tile {
             Layout.fillWidth: true

@@ -11,16 +11,13 @@ Singleton {
     id: root
 
     property bool mediaDismissed: false
-    property bool mediaExpanded: false
 
     property bool panelHeld: false
     property bool inputActive: false
 
     readonly property string computedBase: WindowState.isFullscreen
         ? "strip"
-        : (Media.active && !mediaDismissed
-            ? (mediaExpanded ? "controlCenter" : "mediaViz")
-            : "hour")
+        : (Media.active && !mediaDismissed ? "mediaViz" : "hour")
 
     property string pinnedBase: ""
 
@@ -65,10 +62,11 @@ Singleton {
     onStateChanged: {
         wake()
 
-        if (state !== "controlCenter") {
+        if (state !== "controlCenter")
             inputActive = false
+
+        if (state !== "media")
             panelHeld = false
-        }
     }
 
     onBaseStateChanged: wake()
@@ -119,7 +117,8 @@ Singleton {
     }
 
     function showNotification(notif) {
-        if (Notifs.dnd || overlayState === "notifCenter" || overlayState === "powerMenu")
+        if (Notifs.dnd || Media.isFromPlayer(notif)
+            || overlayState === "notifCenter" || overlayState === "powerMenu")
             return
 
         currentNotif = notif
@@ -155,42 +154,38 @@ Singleton {
         wake()
     }
 
-    Timer {
-        id: mediaIntroTimer
-        interval: Theme.mediaIntroTimeout
-        onTriggered: root.mediaExpanded = false
-    }
-
     onPanelHeldChanged: {
+        if (overlayState !== "media")
+            return
+
         if (panelHeld)
-            mediaIntroTimer.stop()
-        else if (mediaExpanded)
-            mediaIntroTimer.restart()
+            overlayTimer.stop()
+        else
+            overlayTimer.restart()
     }
 
     function announceMedia() {
         mediaDismissed = false
-        mediaExpanded = true
-        if (!panelHeld)
-            mediaIntroTimer.restart()
+
+        if (overlayState === "powerMenu" || overlayState === "notifCenter")
+            return
+
+        overlayState = "media"
+        overlayTimer.interval = Theme.mediaIntroTimeout
+        overlayTimer.restart()
         wake()
     }
 
     function dismissMedia() {
-        mediaIntroTimer.stop()
-        mediaExpanded = false
         mediaDismissed = true
+        if (overlayState === "media")
+            clearOverlay()
     }
 
     Connections {
         target: Media
 
         function onActiveChanged() {
-            if (Media.active)
-                root.announceMedia()
-        }
-
-        function onTitleChanged() {
             if (Media.active)
                 root.announceMedia()
         }
@@ -229,15 +224,6 @@ Singleton {
         default:
             pinBase(name)
         }
-    }
-
-    function requestMedia() {
-        const pinned = pinnedBase === "controlCenter"
-
-        resetState()
-
-        if (!pinned)
-            pinBase("controlCenter")
     }
 
     function cycle() {
@@ -285,9 +271,16 @@ Singleton {
 
     GlobalShortcut {
         appid: "quickshell"
-        name: "island_media"
+        name: "island_controlcenter"
         description: "Island : Control Center"
-        onPressed: root.requestMedia()
+        onPressed: root.requestState("controlCenter")
+    }
+
+    GlobalShortcut {
+        appid: "quickshell"
+        name: "island_media"
+        description: "Island : lecteur média"
+        onPressed: root.requestState("media")
     }
 
     GlobalShortcut {
@@ -315,7 +308,7 @@ Singleton {
         target: "island"
 
         function setState(name: string): string {
-            if (["hour", "controlCenter", "mediaViz", "strip"].indexOf(name) !== -1) {
+            if (["hour", "controlCenter", "mediaViz", "media", "strip"].indexOf(name) !== -1) {
                 root.clearOverlay()
                 root.pinBase(name)
                 return `base -> ${name}`
